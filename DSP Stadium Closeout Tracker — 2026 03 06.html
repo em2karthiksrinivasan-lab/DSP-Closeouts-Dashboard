@@ -1,0 +1,2162 @@
+<!DOCTYPE html>
+<!-- saved from url=(0070)file:///C:/Users/karthiks/Downloads/DSP_Stadium_Live_Dashboard_v3.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSP Stadium Closeout Tracker — Live Dashboard</title>
+<script src="./DSP Stadium Closeout Tracker — 2026 03 06_files/chart.umd.min.js.download"></script>
+<script src="./DSP Stadium Closeout Tracker — 2026 03 06_files/xlsx.full.min.js.download"></script>
+<link href="./DSP Stadium Closeout Tracker — 2026 03 06_files/css2" rel="stylesheet">
+<style>
+:root{
+  --bg:#f1f5f9;--white:#fff;--border:#e2e8f0;--border2:#cbd5e1;
+  --navy:#1e3a5f;--blue:#2563eb;--blue-l:#eff6ff;
+  --green:#15803d;--green-l:#f0fdf4;
+  --amber:#b45309;--amber-l:#fffbeb;
+  --red:#dc2626;--red-l:#fef2f2;
+  --purple:#7c3aed;--purple-l:#f5f3ff;
+  --teal:#0f766e;--teal-l:#f0fdfa;
+  --text:#1e293b;--text2:#64748b;--text3:#94a3b8;
+  --shadow:0 1px 3px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.04);
+  --shadow-lg:0 6px 28px rgba(0,0,0,.10);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text)}
+
+/* LOGIN */
+#login{position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 50%,#1e40af 100%)}
+.lg-pat{position:absolute;inset:0;opacity:.04;background:repeating-linear-gradient(45deg,#fff 0,#fff 1px,transparent 0,transparent 50%);background-size:20px 20px}
+.lg-box{background:#fff;border-radius:22px;padding:44px 40px;width:420px;position:relative;z-index:1;
+  box-shadow:0 32px 80px rgba(0,0,0,.35);animation:pop .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{from{opacity:0;transform:scale(.9) translateY(20px)}to{opacity:1;transform:none}}
+.lg-logo{width:64px;height:64px;border-radius:16px;margin:0 auto 14px;
+  background:linear-gradient(135deg,#1e3a5f,#2563eb);display:flex;align-items:center;justify-content:center;font-size:28px;
+  box-shadow:0 8px 24px rgba(37,99,235,.3)}
+.lg-h{text-align:center;margin-bottom:26px}
+.lg-h h2{font-size:20px;font-weight:800;color:var(--navy);margin-top:4px}
+.lg-h p{font-size:11px;color:var(--text2);letter-spacing:.5px;margin-top:3px}
+.lg-tabs{display:flex;background:#f1f5f9;border-radius:10px;padding:3px;margin-bottom:20px}
+.lg-tab{flex:1;padding:8px;text-align:center;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text2);transition:all .2s}
+.lg-tab.active{background:#fff;color:var(--blue);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.lf{margin-bottom:13px}
+.lf label{display:block;font-size:10px;font-weight:700;color:var(--text2);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:5px}
+.lf input{width:100%;padding:11px 14px;border:1.5px solid var(--border2);border-radius:9px;font-family:'Plus Jakarta Sans';font-size:14px;outline:none;background:#fafafa;color:var(--text);transition:all .2s}
+.lf input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.1);background:#fff}
+.lg-btn{width:100%;padding:13px;border:none;border-radius:11px;cursor:pointer;margin-top:6px;
+  background:linear-gradient(135deg,#1e3a5f,#2563eb);color:#fff;font-size:15px;font-weight:700;font-family:'Plus Jakarta Sans';transition:opacity .2s,transform .15s}
+.lg-btn:hover{opacity:.92;transform:translateY(-1px)}
+.lg-err{color:var(--red);font-size:12px;text-align:center;margin-top:8px;display:none}
+.lg-hint{margin-top:16px;padding-top:14px;border-top:1px solid var(--border);font-size:11px;color:var(--text3);text-align:center;font-family:'DM Mono'}
+.lg-hint b{color:var(--blue)}
+
+/* NAV */
+#app{display:none;min-height:100vh}
+.nav{background:linear-gradient(135deg,#1e3a5f,#1e40af);padding:0 28px;height:62px;
+  display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;
+  box-shadow:0 2px 20px rgba(30,58,95,.35)}
+.nav-brand{display:flex;align-items:center;gap:11px}
+.nav-ico{width:34px;height:34px;background:rgba(255,255,255,.15);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.nav-title{font-size:15px;font-weight:800;color:#fff;letter-spacing:-.3px}
+.nav-sub{font-size:10px;color:rgba(255,255,255,.55);letter-spacing:1px;text-transform:uppercase}
+.nav-r{display:flex;align-items:center;gap:11px}
+.nav-badge{background:rgba(255,255,255,.12);border-radius:7px;padding:5px 11px;font-size:11px;color:rgba(255,255,255,.8);font-family:'DM Mono'}
+.data-badge{background:rgba(34,197,94,.2);border:1px solid rgba(34,197,94,.3);border-radius:7px;padding:5px 11px;font-size:11px;color:#86efac;font-family:'DM Mono';display:none}
+.data-badge.live{display:block}
+.nav-role{background:rgba(255,255,255,.18);border-radius:20px;padding:4px 13px;font-size:11px;font-weight:700;color:#fff}
+.nav-role.admin{background:rgba(251,191,36,.22);color:#fbbf24}
+.nav-av{width:30px;height:30px;background:rgba(255,255,255,.18);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px}
+.nav-user{display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.88)}
+.lo-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.8);padding:5px 13px;border-radius:7px;font-size:12px;cursor:pointer;font-family:'Plus Jakarta Sans';transition:background .2s}
+.lo-btn:hover{background:rgba(255,255,255,.2)}
+
+/* TABS */
+.tabs{background:#fff;border-bottom:2px solid var(--border);padding:0 28px;display:flex;gap:2px;overflow-x:auto;position:sticky;top:62px;z-index:90;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.tab{padding:13px 16px;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;border-radius:6px 6px 0 0;letter-spacing:.2px}
+.tab:hover{color:var(--blue);background:var(--blue-l)}
+.tab.on{color:var(--blue);border-bottom-color:var(--blue);background:var(--blue-l)}
+
+/* PAGE */
+.page{padding:22px 28px;max-width:1600px;margin:0 auto}
+.sec{display:none}.sec.on{display:block}
+.sec-title{font-size:19px;font-weight:800;color:var(--navy);letter-spacing:-.4px}
+.sec-sub{font-size:12px;color:var(--text2);margin-top:3px;margin-bottom:20px}
+
+/* UPLOAD HERO — shown until file loaded */
+.upload-hero{background:linear-gradient(135deg,#fffbeb,#fef3c7);border:2px dashed #d97706;border-radius:18px;
+  padding:36px;text-align:center;margin-bottom:24px;transition:all .3s}
+.upload-hero.loaded{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-color:#15803d}
+.uh-ico{font-size:48px;margin-bottom:12px}
+.uh-title{font-size:18px;font-weight:800;color:var(--navy);margin-bottom:6px}
+.uh-sub{font-size:13px;color:var(--text2);margin-bottom:20px}
+.uh-btn{display:inline-flex;align-items:center;gap:8px;padding:13px 28px;border-radius:12px;
+  background:linear-gradient(135deg,#1e3a5f,#2563eb);color:#fff;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:'Plus Jakarta Sans';transition:opacity .2s,transform .15s}
+.uh-btn:hover{opacity:.9;transform:translateY(-1px)}
+.uh-input{display:none}
+.uh-status{margin-top:14px;font-size:13px;font-weight:700;color:var(--green)}
+.uh-sheets{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px}
+.uh-sheet{background:#fff;border:1px solid var(--border2);border-radius:6px;padding:3px 10px;font-size:11px;color:var(--text2);font-family:'DM Mono'}
+.uh-sheet.loaded{background:var(--green-l);border-color:var(--green);color:var(--green)}
+
+/* KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:22px}
+.kpi{background:#fff;border-radius:15px;padding:18px;box-shadow:var(--shadow);border:1px solid var(--border);position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s;cursor:default}
+.kpi:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.kpi-stripe{position:absolute;top:0;left:0;right:0;height:4px;border-radius:15px 15px 0 0}
+.kpi-ico{font-size:24px;margin-bottom:8px}
+.kpi-lbl{font-size:10px;font-weight:700;color:var(--text2);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px}
+.kpi-val{font-size:28px;font-weight:800;letter-spacing:-1px;line-height:1}
+.kpi-meta{font-size:11px;color:var(--text2);margin-top:4px;font-family:'DM Mono'}
+.kpi-bar{margin-top:8px;height:5px;background:var(--bg);border-radius:10px;overflow:hidden}
+.kpi-bar-f{height:100%;border-radius:10px;transition:width 1.4s ease}
+
+/* GAUGE */
+.gauge-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.gc{background:#fff;border-radius:15px;padding:18px;text-align:center;box-shadow:var(--shadow);border:1px solid var(--border);transition:transform .2s,box-shadow .2s}
+.gc:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.gc-lbl{font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px}
+.gw{position:relative;width:140px;height:78px;margin:0 auto 6px}
+.gsvg{width:140px;height:78px}
+.gv{position:absolute;bottom:0;left:50%;transform:translateX(-50%);font-size:22px;font-weight:800}
+.gc-note{font-size:11px;color:var(--text2);font-family:'DM Mono'}
+
+/* PANELS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:18px}
+.gmain{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:18px}
+.panel{background:#fff;border-radius:15px;padding:20px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:18px}
+.panel.mb0{margin-bottom:0}
+.ph{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:10px}
+.pt{font-size:14px;font-weight:800;color:var(--navy);letter-spacing:-.2px}
+.ps{font-size:11px;color:var(--text2);margin-top:2px}
+.pa{display:flex;gap:7px;flex-shrink:0}
+.bp{background:var(--blue-l);color:var(--blue);border:1px solid rgba(37,99,235,.2);border-radius:7px;padding:5px 11px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans';transition:background .2s}
+.bp:hover{background:#dbeafe}
+.bt{background:var(--bg);color:var(--text2);border:1px solid var(--border2);border-radius:7px;padding:5px 10px;font-size:11px;cursor:pointer;font-family:'Plus Jakarta Sans';transition:background .2s}
+.bt:hover{background:var(--border)}
+.cw{position:relative}.h180{height:180px}.h240{height:240px}.h300{height:300px}.h340{height:340px}
+
+/* TABLE */
+.tw{overflow-x:auto}
+.dt{width:100%;border-collapse:collapse}
+.dt th{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);padding:9px 12px;text-align:left;border-bottom:2px solid var(--border);font-weight:700;background:#fafafa;white-space:nowrap;position:sticky;top:0}
+.dt td{font-size:12px;padding:9px 12px;border-bottom:1px solid var(--border)}
+.dt tr:hover td{background:#f8fafc}
+.dt tr:last-child td{border:none}
+.mb{width:80px;height:6px;background:var(--bg);border-radius:10px;display:inline-block;vertical-align:middle;margin-right:5px;overflow:hidden}
+.mbf{height:100%;border-radius:10px}
+.pill{display:inline-block;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.5px;white-space:nowrap}
+.pa-pill{background:#dcfce7;color:#15803d}.pb-pill{background:#dbeafe;color:#1d4ed8}
+.pc-pill{background:#fef3c7;color:#b45309}.pd-pill{background:#fee2e2;color:#dc2626}
+.pe-pill{background:#f1f5f9;color:#64748b}.pur-pill{background:#ede9fe;color:#7c3aed}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:48px 20px;color:var(--text2)}
+.empty-ico{font-size:40px;margin-bottom:12px}
+.empty p{font-size:13px}
+.empty b{color:var(--blue)}
+
+/* MODAL */
+.mov{position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.mov.open{display:flex}
+.mbox{background:#fff;border-radius:18px;width:94vw;max-width:1100px;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,.2);animation:mIn .3s cubic-bezier(.34,1.56,.64,1)}
+@keyframes mIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:none}}
+.mh{padding:17px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.mt{font-size:15px;font-weight:800;color:var(--navy)}
+.mas{display:flex;gap:9px;align-items:center}
+.mdl{background:linear-gradient(135deg,#1e3a5f,#2563eb);color:#fff;border:none;border-radius:9px;padding:8px 16px;font-family:'Plus Jakarta Sans';font-size:12px;font-weight:700;cursor:pointer;transition:opacity .2s}
+.mdl:hover{opacity:.9}
+.mx{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text2);padding:4px 8px;border-radius:6px}
+.mx:hover{background:var(--bg)}
+.mb-body{padding:18px 22px;overflow-y:auto;flex:1}
+.mt-tbl{width:100%;border-collapse:collapse}
+.mt-tbl th{font-size:10px;font-weight:700;color:var(--text2);letter-spacing:1.2px;text-transform:uppercase;padding:9px 12px;text-align:left;border-bottom:2px solid var(--border);background:#fafafa;position:sticky;top:0}
+.mt-tbl td{font-size:12px;padding:9px 12px;border-bottom:1px solid var(--border)}
+.mt-tbl tr:hover td{background:#f8fafc}
+
+/* FOOTER */
+footer{text-align:center;padding:18px;font-size:11px;color:var(--text3);font-family:'DM Mono';border-top:1px solid var(--border);background:#fff;margin-top:16px}
+@media(max-width:1100px){.kpi-row{grid-template-columns:repeat(3,1fr)}.gauge-row{grid-template-columns:repeat(2,1fr)}.gmain,.g2{grid-template-columns:1fr}}
+@media(max-width:700px){.page{padding:14px}.kpi-row{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login" style="display: none;">
+  <div class="lg-pat"></div>
+  <div class="lg-box">
+    <div class="lg-h"><div class="lg-logo">🏟️</div><h2>DSP Stadium Closeout Tracker</h2><p>ARAMCO STADIUM · DAMMAM · LIVE DASHBOARD</p></div>
+    <div class="lg-tabs">
+      <div class="lg-tab active" onclick="setRole(&#39;admin&#39;,this)">👤 Admin</div>
+      <div class="lg-tab" onclick="setRole(&#39;viewer&#39;,this)">👁 Viewer</div>
+    </div>
+    <div class="lf"><label>Username</label><input type="text" id="uIn" placeholder="Enter username" autocomplete="off"></div>
+    <div class="lf"><label>Password</label><input type="password" id="pIn" placeholder="••••••••" onkeydown="if(event.key===&#39;Enter&#39;)doLogin()"></div>
+    <button class="lg-btn" onclick="doLogin()">ACCESS DASHBOARD →</button>
+    <div class="lg-err" id="lgErr" style="display: none;">⚠ Invalid credentials. Please try again.</div>
+    <div class="lg-hint">Admin: <b>admin / admin2025</b> &nbsp;|&nbsp; Viewer: <b>viewer / view123</b></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display: block;">
+  <nav class="nav">
+    <div class="nav-brand">
+      <div class="nav-ico">🏟️</div>
+      <div><div class="nav-title">DSP Stadium · Closeout Tracker</div><div class="nav-sub">Aramco Stadium · Dammam · Live Dashboard</div></div>
+    </div>
+    <div class="nav-r">
+      <div class="data-badge live" id="dataBadge">⬤ LIVE DATA</div>
+      <div class="nav-badge" id="navDate">08 Mar 2026</div>
+      <div class="nav-role admin" id="navRole">ADMIN</div>
+      <div class="nav-user"><div class="nav-av">👤</div><span id="navUser">Admin</span></div>
+      <button class="lo-btn" onclick="doLogout()">Sign Out</button>
+    </div>
+  </nav>
+
+  <div class="tabs">
+    <div class="tab" onclick="goTab(&#39;overview&#39;,this)">📊 Overview</div>
+    <div class="tab" onclick="goTab(&#39;asbuilt&#39;,this)">📐 As-Built</div>
+    <div class="tab" onclick="goTab(&#39;lod&#39;,this)">🏗️ LOD 500</div>
+    <div class="tab on" onclick="goTab(&#39;warranty&#39;,this)">🛡️ Warranty</div>
+    <div class="tab" onclick="goTab(&#39;lessons&#39;,this)">📚 Lessons Learned</div>
+    <div class="tab" onclick="goTab(&#39;comms&#39;,this)">📡 Communications</div>
+    <div class="tab" onclick="goTab(&#39;snagging&#39;,this)">🔧 Snagging</div>
+    <div class="tab" onclick="goTab(&#39;tc&#39;,this)">⚡ T&amp;C</div>
+    <div class="tab" onclick="goTab(&#39;authorities&#39;,this)">🏛️ Authorities</div>
+    <div class="tab" onclick="goTab(&#39;closeout&#39;,this)">✅ Closeout</div>
+    <div class="tab upload-tab" style="" onclick="goTab(&#39;upload&#39;,this)">📂 Upload Data</div>
+    <div class="tab admin-tab" style="" onclick="goTab(&#39;admin&#39;,this)">⚙️ Admin</div>
+  </div>
+
+  <div class="page">
+
+    <!-- OVERVIEW -->
+    <div class="sec" id="sec-overview">
+      <div class="sec-title">Project Closeout Overview</div>
+      <div class="sec-sub" id="ovSub">Aramco Stadium, Dammam · 1,184 As-Built Drawings loaded</div>
+      <!-- Admin-only inline notice (shown only when no data loaded yet) -->
+      <div id="noDataBanner" style="background: linear-gradient(135deg, rgb(255, 251, 235), rgb(254, 243, 199)); border: 1.5px dashed rgb(217, 119, 6); border-radius: 14px; padding: 16px 22px; margin-bottom: 20px; display: none; align-items: center; gap: 14px;">
+        <span style="font-size:24px">⚠️</span>
+        <div><div style="font-size:13px;font-weight:800;color:#b45309">No data loaded yet</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:2px">Go to the <b>Upload</b> tab to load your Excel file and populate all charts</div></div>
+        <button class="bp" style="margin-left:auto;white-space:nowrap" onclick="goTab(&#39;upload&#39;,document.querySelector(&#39;.upload-tab&#39;))">📂 Go to Upload</button>
+      </div>
+      <div class="kpi-row" id="ovKpi"><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#1e3a5f,#2563eb)"></div>
+      <div class="kpi-ico">📐</div><div class="kpi-lbl">As-Built Drawings</div>
+      <div class="kpi-val" style="color:#2563eb">1,184</div>
+      <div class="kpi-meta">Tracked drawings</div>
+      <div class="kpi-bar"><div class="kpi-bar-f" style="background:#2563eb;width:72%"></div></div>
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#15803d,#22c55e)"></div>
+      <div class="kpi-ico">🏗️</div><div class="kpi-lbl">LOD 500 Items</div>
+      <div class="kpi-val" style="color:#15803d">180</div>
+      <div class="kpi-meta">BIM model items</div>
+      
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#7c3aed,#a78bfa)"></div>
+      <div class="kpi-ico">🛡️</div><div class="kpi-lbl">Warranty Entries</div>
+      <div class="kpi-val" style="color:#7c3aed">15</div>
+      <div class="kpi-meta">2 approved</div>
+      <div class="kpi-bar"><div class="kpi-bar-f" style="background:#7c3aed;width:13%"></div></div>
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#0f766e,#2dd4bf)"></div>
+      <div class="kpi-ico">📚</div><div class="kpi-lbl">Lessons Learned</div>
+      <div class="kpi-val" style="color:#0f766e">58</div>
+      <div class="kpi-meta">Quality entries</div>
+      
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#b45309,#f59e0b)"></div>
+      <div class="kpi-ico">📡</div><div class="kpi-lbl">Communications</div>
+      <div class="kpi-val" style="color:#b45309">0</div>
+      <div class="kpi-meta">0 resolved</div>
+      <div class="kpi-bar"><div class="kpi-bar-f" style="background:#b45309;width:0%"></div></div>
+    </div></div>
+      <div class="gauge-row" id="gaugeRow"><div class="gc"><div class="gc-lbl">As-Built Progress</div>
+      <div class="gw"><svg class="gsvg" viewBox="0 0 140 80">
+    <path d="M 16,70 A 54,54 0 0,1 124,70" fill="none" stroke="#e2e8f0" stroke-width="10" stroke-linecap="round"></path>
+    <path d="M 16,70 A 54,54 0 0,1 124,70" fill="none" stroke="#2563eb" stroke-width="10" stroke-linecap="round" stroke-dasharray="122.14512237157115 169.64600329384882"></path></svg><div class="gv" style="color:#2563eb">72%</div></div>
+      <div class="gc-note">1,184 drawings</div></div><div class="gc"><div class="gc-lbl">Warranty Approved</div>
+      <div class="gw"><svg class="gsvg" viewBox="0 0 140 80">
+    <path d="M 16,70 A 54,54 0 0,1 124,70" fill="none" stroke="#e2e8f0" stroke-width="10" stroke-linecap="round"></path>
+    <path d="M 16,70 A 54,54 0 0,1 124,70" fill="none" stroke="#15803d" stroke-width="10" stroke-linecap="round" stroke-dasharray="22.053980428200347 169.64600329384882"></path></svg><div class="gv" style="color:#15803d">13%</div></div>
+      <div class="gc-note">2 of 15</div></div><div class="gc"><div class="gc-lbl">Comms Resolved</div>
+      <div class="gw"><svg class="gsvg" viewBox="0 0 140 80">
+    <path d="M 16,70 A 54,54 0 0,1 124,70" fill="none" stroke="#e2e8f0" stroke-width="10" stroke-linecap="round"></path>
+    <path d="M 16,70 A 54,54 0 0,1 124,70" fill="none" stroke="#0f766e" stroke-width="10" stroke-linecap="round" stroke-dasharray="0 169.64600329384882"></path></svg><div class="gv" style="color:#0f766e">0%</div></div>
+      <div class="gc-note">0 of 0</div></div><div class="gc"><div class="gc-lbl">T&amp;C Complete</div>
+      <div class="gw"><svg class="gsvg" viewBox="0 0 140 80">
+    <path d="M 16,70 A 54,54 0 0,1 124,70" fill="none" stroke="#e2e8f0" stroke-width="10" stroke-linecap="round"></path>
+    <path d="M 16,70 A 54,54 0 0,1 124,70" fill="none" stroke="#7c3aed" stroke-width="10" stroke-linecap="round" stroke-dasharray="0 169.64600329384882"></path></svg><div class="gv" style="color:#7c3aed">0%</div></div>
+      <div class="gc-note">15 items</div></div></div>
+      <div class="gmain">
+        <div class="panel mb0">
+          <div class="ph"><div><div class="pt">As-Built Drawings by Originator</div><div class="ps" id="abSubTitle">1,184 total drawings · 10 originators</div></div>
+            <div class="pa"><button class="bp" onclick="dlChart(&#39;origChart&#39;,&#39;AsBuilt_Originators&#39;)">⬇ PNG</button><button class="bt" onclick="openModal(&#39;origModal&#39;)">📋 Table</button></div></div>
+          <div class="cw h300"><canvas id="origChart" style="box-sizing: border-box; display: block; height: 300px; width: 976px;" width="976" height="300"></canvas></div></div>
+        <div class="panel mb0">
+          <div class="ph"><div><div class="pt">Warranty Status Split</div><div class="ps" id="warSubTitle">15 warranty entries · 4 sub-contractors</div></div>
+            <div class="pa"><button class="bp" onclick="dlChart(&#39;warDonut&#39;,&#39;Warranty_Status&#39;)">⬇ PNG</button><button class="bt" onclick="openModal(&#39;warModal&#39;)">📋 Table</button></div></div>
+          <div class="cw h300"><canvas id="warDonut" style="box-sizing: border-box; display: block; height: 300px; width: 467px;" width="467" height="300"></canvas></div></div>
+      </div>
+      <div class="g2">
+        <div class="panel mb0">
+          <div class="ph"><div><div class="pt">Lessons Learned by Discipline</div><div class="ps" id="lessSubTitle">58 lessons · 9 disciplines</div></div>
+            <div class="pa"><button class="bp" onclick="dlChart(&#39;lessChart&#39;,&#39;Lessons_Discipline&#39;)">⬇ PNG</button><button class="bt" onclick="openModal(&#39;lessDiscModal&#39;)">📋 Table</button></div></div>
+          <div class="cw h240"><canvas id="lessChart" style="box-sizing: border-box; display: block; height: 240px; width: 722px;" width="722" height="240"></canvas></div></div>
+        <div class="panel mb0">
+          <div class="ph"><div><div class="pt">Communications by Status</div><div class="ps" id="commSubTitle">0 records · 0 resolved</div></div>
+            <div class="pa"><button class="bp" onclick="dlChart(&#39;commChart&#39;,&#39;Comms_Status&#39;)">⬇ PNG</button><button class="bt" onclick="openModal(&#39;commModal&#39;)">📋 Table</button></div></div>
+          <div class="cw h240"><canvas id="commChart" height="240" style="display: block; box-sizing: border-box; height: 240px; width: 722px;" width="722"></canvas></div></div>
+      </div>
+    </div>
+
+    <!-- AS-BUILT -->
+    <div class="sec" id="sec-asbuilt">
+      <div class="sec-title">As-Built Drawings Tracker</div>
+      <div class="sec-sub">Sheet: "2. As-Built Drawings" · Originator, Discipline, Zone, Status tracking</div>
+      <div class="kpi-row" id="abKpi" style="grid-template-columns:repeat(4,1fr)"><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#1e3a5f,#2563eb)"></div>
+      <div class="kpi-ico">📐</div><div class="kpi-lbl">Total Drawings</div>
+      <div class="kpi-val" style="color:#2563eb">1,184</div>
+      <div class="kpi-meta">All tracked drawings</div>
+      <div class="kpi-bar"><div class="kpi-bar-f" style="background:#2563eb;width:72%"></div></div>
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#15803d,#22c55e)"></div>
+      <div class="kpi-ico">👤</div><div class="kpi-lbl">Originators</div>
+      <div class="kpi-val" style="color:#15803d">10</div>
+      <div class="kpi-meta">Unique originators</div>
+      
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#0f766e,#2dd4bf)"></div>
+      <div class="kpi-ico">🏆</div><div class="kpi-lbl">Top Originator</div>
+      <div class="kpi-val" style="color:#0f766e">Jalabi</div>
+      <div class="kpi-meta">320 drawings</div>
+      
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#7c3aed,#a78bfa)"></div>
+      <div class="kpi-ico">📊</div><div class="kpi-lbl">Avg Per Originator</div>
+      <div class="kpi-val" style="color:#7c3aed">118</div>
+      <div class="kpi-meta">drawings per person</div>
+      
+    </div></div>
+      <div class="g2">
+        <div class="panel mb0">
+          <div class="ph"><div><div class="pt">Drawings by Originator</div><div class="ps">Count per originator</div></div>
+            <div class="pa"><button class="bp" onclick="dlChart(&#39;abBar&#39;,&#39;AB_Originator_Bar&#39;)">⬇ PNG</button><button class="bt" onclick="openModal(&#39;origModal&#39;)">📋 Table</button></div></div>
+          <div class="cw h300"><canvas id="abBar" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 722px;" width="722"></canvas></div></div>
+        <div class="panel mb0">
+          <div class="ph"><div><div class="pt">Originator Share</div><div class="ps">% of total drawings</div></div>
+            <div class="pa"><button class="bp" onclick="dlChart(&#39;abDonut&#39;,&#39;AB_Originator_Donut&#39;)">⬇ PNG</button></div></div>
+          <div class="cw h300"><canvas id="abDonut" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 722px;" width="722"></canvas></div></div>
+      </div>
+      <div class="panel">
+        <div class="ph"><div><div class="pt">As-Built Drawings Register</div><div class="ps" id="abTblSub">1,184 drawings across 10 originators</div></div>
+          <div class="pa"><button class="bt" onclick="openModal(&#39;origModal&#39;)">⬇ CSV</button></div></div>
+        <div class="tw"><table class="dt"><thead><tr><th>#</th><th>Originator</th><th>Count</th><th>% Share</th><th>Progress</th></tr></thead>
+        <tbody id="abTbody"><tr><td>1</td><td><b>Jalabi</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">320</td>
+      <td style="font-family:&#39;DM Mono&#39;">27.0%</td>
+      <td><div class="mb"><div class="mbf" style="width:27.0%;background:#2563eb"></div></div><span style="font-size:11px;font-family:&#39;DM Mono&#39;">27.0%</span></td></tr><tr><td>2</td><td><b>Kumar</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">308</td>
+      <td style="font-family:&#39;DM Mono&#39;">26.0%</td>
+      <td><div class="mb"><div class="mbf" style="width:26.0%;background:#15803d"></div></div><span style="font-size:11px;font-family:&#39;DM Mono&#39;">26.0%</span></td></tr><tr><td>3</td><td><b>Nasser</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">222</td>
+      <td style="font-family:&#39;DM Mono&#39;">18.8%</td>
+      <td><div class="mb"><div class="mbf" style="width:18.8%;background:#0f766e"></div></div><span style="font-size:11px;font-family:&#39;DM Mono&#39;">18.8%</span></td></tr><tr><td>4</td><td><b>Bairoomi</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">165</td>
+      <td style="font-family:&#39;DM Mono&#39;">13.9%</td>
+      <td><div class="mb"><div class="mbf" style="width:13.9%;background:#7c3aed"></div></div><span style="font-size:11px;font-family:&#39;DM Mono&#39;">13.9%</span></td></tr><tr><td>5</td><td><b>Nassar</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">64</td>
+      <td style="font-family:&#39;DM Mono&#39;">5.4%</td>
+      <td><div class="mb"><div class="mbf" style="width:5.4%;background:#b45309"></div></div><span style="font-size:11px;font-family:&#39;DM Mono&#39;">5.4%</span></td></tr><tr><td>6</td><td><b>Louis</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">30</td>
+      <td style="font-family:&#39;DM Mono&#39;">2.5%</td>
+      <td><div class="mb"><div class="mbf" style="width:2.5%;background:#dc2626"></div></div><span style="font-size:11px;font-family:&#39;DM Mono&#39;">2.5%</span></td></tr><tr><td>7</td><td><b>Fazil / GLC</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">24</td>
+      <td style="font-family:&#39;DM Mono&#39;">2.0%</td>
+      <td><div class="mb"><div class="mbf" style="width:2.0%;background:#1d4ed8"></div></div><span style="font-size:11px;font-family:&#39;DM Mono&#39;">2.0%</span></td></tr><tr><td>8</td><td><b>MID-Issa/Rifad</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">22</td>
+      <td style="font-family:&#39;DM Mono&#39;">1.9%</td>
+      <td><div class="mb"><div class="mbf" style="width:1.9%;background:#059669"></div></div><span style="font-size:11px;font-family:&#39;DM Mono&#39;">1.9%</span></td></tr><tr><td>9</td><td><b>MID-Manon/Jalabi</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">21</td>
+      <td style="font-family:&#39;DM Mono&#39;">1.8%</td>
+      <td><div class="mb"><div class="mbf" style="width:1.8%;background:#d97706"></div></div><span style="font-size:11px;font-family:&#39;DM Mono&#39;">1.8%</span></td></tr><tr><td>10</td><td><b>MID-Issa/Thaha</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">8</td>
+      <td style="font-family:&#39;DM Mono&#39;">0.7%</td>
+      <td><div class="mb"><div class="mbf" style="width:0.7%;background:#9333ea"></div></div><span style="font-size:11px;font-family:&#39;DM Mono&#39;">0.7%</span></td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- LOD 500 -->
+    <div class="sec" id="sec-lod">
+      <div class="sec-title">BIM Model — LOD 500 Tracker</div>
+      <div class="sec-sub">Sheet: "1. LOD 500 Tracker" · 180 model items · Sub-Con, Discipline, Status</div>
+      <div class="kpi-row" id="lodKpi" style="grid-template-columns:repeat(4,1fr)"><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#1e3a5f,#2563eb)"></div>
+      <div class="kpi-ico">🏗️</div><div class="kpi-lbl">Total Items</div>
+      <div class="kpi-val" style="color:#1e3a5f">180</div>
+      <div class="kpi-meta">LOD 500 register</div>
+      
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#15803d,#22c55e)"></div>
+      <div class="kpi-ico">✅</div><div class="kpi-lbl">With Sub-Con</div>
+      <div class="kpi-val" style="color:#15803d">1</div>
+      <div class="kpi-meta">Assigned items</div>
+      <div class="kpi-bar"><div class="kpi-bar-f" style="background:#15803d;width:1%"></div></div>
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#b45309,#f59e0b)"></div>
+      <div class="kpi-ico">⏳</div><div class="kpi-lbl">Pending Fill</div>
+      <div class="kpi-val" style="color:#b45309">179</div>
+      <div class="kpi-meta">Awaiting data</div>
+      
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#7c3aed,#a78bfa)"></div>
+      <div class="kpi-ico">👥</div><div class="kpi-lbl">Sub-Contractors</div>
+      <div class="kpi-val" style="color:#7c3aed">1</div>
+      <div class="kpi-meta">Assigned</div>
+      
+    </div></div>
+      <div class="g2">
+        <div class="panel mb0">
+          <div class="ph"><div><div class="pt">LOD Items by Sub-Contractor</div><div class="ps">Assigned vs unassigned</div></div>
+            <div class="pa"><button class="bp" onclick="dlChart(&#39;lodBar&#39;,&#39;LOD_SubCon&#39;)">⬇ PNG</button><button class="bt" onclick="openModal(&#39;lodModal&#39;)">📋 Table</button></div></div>
+          <div class="cw h300"><canvas id="lodBar" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 722px;" width="722"></canvas></div></div>
+        <div class="panel mb0">
+          <div class="ph"><div><div class="pt">LOD by Discipline</div><div class="ps">Discipline breakdown</div></div>
+            <div class="pa"><button class="bp" onclick="dlChart(&#39;lodDiscChart&#39;,&#39;LOD_Discipline&#39;)">⬇ PNG</button></div></div>
+          <div class="cw h300"><canvas id="lodDiscChart" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 722px;" width="722"></canvas></div></div>
+      </div>
+      <div class="panel">
+        <div class="ph"><div><div class="pt">LOD 500 Register</div><div class="ps">All items with sub-con and discipline</div></div>
+          <div class="pa"><button class="bt" onclick="openModal(&#39;lodModal&#39;)">⬇ CSV</button></div></div>
+        <div class="tw"><table class="dt"><thead><tr><th>#</th><th>Sub-Con</th><th>Discipline</th><th>System</th><th>Status</th></tr></thead>
+        <tbody id="lodTbody"><tr><td>1</td><td>JGS</td>
+      <td>Steel Structure</td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>2</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>3</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>4</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>5</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>6</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>7</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>8</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>9</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>10</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>11</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>12</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>13</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>14</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>15</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>16</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>17</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>18</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>19</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>20</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>21</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>22</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>23</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>24</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>25</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>26</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>27</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>28</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>29</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>30</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>31</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>32</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>33</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>34</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>35</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>36</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>37</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>38</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>39</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>40</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>41</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>42</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>43</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>44</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>45</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>46</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>47</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>48</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>49</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>50</td><td><span style="color:var(--text3)">—</span></td>
+      <td><span style="color:var(--text3)">—</span></td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td colspan="5" style="text-align:center;color:var(--text2);font-size:11px;padding:8px">... and 130 more rows · Download CSV for full data</td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- WARRANTY -->
+    <div class="sec on" id="sec-warranty">
+      <div class="sec-title">Warranty Register</div>
+      <div class="sec-sub">Sheet: "Warranty Register" · Status codes: A=Approved, B=In Review, C=Pending, UR=Under Review</div>
+      <div class="kpi-row" id="warKpi" style="grid-template-columns:repeat(4,1fr)"><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#15803d,#22c55e)"></div>
+      <div class="kpi-ico">✅</div><div class="kpi-lbl">Approved (A)</div>
+      <div class="kpi-val" style="color:#15803d">2</div>
+      <div class="kpi-meta">Fully approved</div>
+      <div class="kpi-bar"><div class="kpi-bar-f" style="background:#15803d;width:13%"></div></div>
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#1d4ed8,#3b82f6)"></div>
+      <div class="kpi-ico">🔄</div><div class="kpi-lbl">In Review (B)</div>
+      <div class="kpi-val" style="color:#2563eb">5</div>
+      <div class="kpi-meta">Under review</div>
+      
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#7c3aed,#a78bfa)"></div>
+      <div class="kpi-ico">👁</div><div class="kpi-lbl">Under Review (UR)</div>
+      <div class="kpi-val" style="color:#7c3aed">5</div>
+      <div class="kpi-meta">Awaiting decision</div>
+      
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#b45309,#f59e0b)"></div>
+      <div class="kpi-ico">⏳</div><div class="kpi-lbl">Pending (C)</div>
+      <div class="kpi-val" style="color:#b45309">3</div>
+      <div class="kpi-meta">Not yet submitted</div>
+      
+    </div></div>
+      <div class="g2">
+        <div class="panel mb0">
+          <div class="ph"><div><div class="pt">Warranty by Sub-Contractor</div><div class="ps">Status breakdown per sub-con</div></div>
+            <div class="pa"><button class="bp" onclick="dlChart(&#39;warBar&#39;,&#39;Warranty_SubCon&#39;)">⬇ PNG</button><button class="bt" onclick="openModal(&#39;warSubModal&#39;)">📋 Table</button></div></div>
+          <div class="cw h300"><canvas id="warBar" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 722px;" width="722"></canvas></div></div>
+        <div class="panel mb0">
+          <div class="ph"><div><div class="pt">Warranty Status Distribution</div><div class="ps">Overall status split</div></div>
+            <div class="pa"><button class="bp" onclick="dlChart(&#39;warStatusChart&#39;,&#39;Warranty_Status_Dist&#39;)">⬇ PNG</button></div></div>
+          <div class="cw h300"><canvas id="warStatusChart" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 722px;" width="722"></canvas></div></div>
+      </div>
+      <div class="panel">
+        <div class="ph"><div><div class="pt">Warranty Register — All Entries</div><div class="ps" id="warTblSub">15 warranty entries</div></div>
+          <div class="pa"><button class="bt" onclick="openModal(&#39;warModal&#39;)">⬇ CSV</button></div></div>
+        <div class="tw"><table class="dt"><thead><tr><th>#</th><th>Sub-Con</th><th>Package</th><th>System</th><th>Cert Ref</th><th>Location</th><th>Status</th></tr></thead>
+        <tbody id="warTbody"><tr><td>1</td><td><b>3IM</b></td><td>—</td>
+      <td>—</td><td style="font-family:&#39;DM Mono&#39;">XXX</td>
+      <td>—</td><td><span class="pill pa-pill">Approved</span></td></tr><tr><td>2</td><td><b>3IM</b></td><td>—</td>
+      <td>—</td><td style="font-family:&#39;DM Mono&#39;">XXX</td>
+      <td>—</td><td><span class="pill pb-pill">In Review</span></td></tr><tr><td>3</td><td><b>JGS</b></td><td>—</td>
+      <td>—</td><td style="font-family:&#39;DM Mono&#39;">XXX</td>
+      <td>—</td><td><span class="pill pb-pill">Under Review</span></td></tr><tr><td>4</td><td><b>IPC</b></td><td>—</td>
+      <td>—</td><td style="font-family:&#39;DM Mono&#39;">XXX</td>
+      <td>—</td><td><span class="pill pa-pill">Approved</span></td></tr><tr><td>5</td><td><b>IPC</b></td><td>—</td>
+      <td>—</td><td style="font-family:&#39;DM Mono&#39;">XXX</td>
+      <td>—</td><td><span class="pill pb-pill">In Review</span></td></tr><tr><td>6</td><td><b>3IM</b></td><td>—</td>
+      <td>—</td><td style="font-family:&#39;DM Mono&#39;">XXX</td>
+      <td>—</td><td><span class="pill pb-pill">Under Review</span></td></tr><tr><td>7</td><td><b>PRA</b></td><td>—</td>
+      <td>—</td><td style="font-family:&#39;DM Mono&#39;">XXX</td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>8</td><td><b>IPC</b></td><td>—</td>
+      <td>—</td><td style="font-family:&#39;DM Mono&#39;">XXX</td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>9</td><td><b>IPC</b></td><td>—</td>
+      <td>—</td><td style="font-family:&#39;DM Mono&#39;">XXX</td>
+      <td>—</td><td><span class="pill pc-pill">Pending</span></td></tr><tr><td>10</td><td><b>IPC</b></td><td>—</td>
+      <td>—</td><td style="font-family:&#39;DM Mono&#39;">XXX</td>
+      <td>—</td><td><span class="pill pb-pill">In Review</span></td></tr><tr><td>11</td><td><b>3IM</b></td><td>—</td>
+      <td>—</td><td style="font-family:&#39;DM Mono&#39;">XXX</td>
+      <td>—</td><td><span class="pill pb-pill">Under Review</span></td></tr><tr><td>12</td><td><b>3IM</b></td><td>—</td>
+      <td>—</td><td style="font-family:&#39;DM Mono&#39;">XXX</td>
+      <td>—</td><td><span class="pill pb-pill">In Review</span></td></tr><tr><td>13</td><td><b>3IM</b></td><td>—</td>
+      <td>—</td><td style="font-family:&#39;DM Mono&#39;">XXX</td>
+      <td>—</td><td><span class="pill pb-pill">Under Review</span></td></tr><tr><td>14</td><td><b>3IM</b></td><td>—</td>
+      <td>—</td><td style="font-family:&#39;DM Mono&#39;">XXX</td>
+      <td>—</td><td><span class="pill pb-pill">In Review</span></td></tr><tr><td>15</td><td><b>JGS</b></td><td>—</td>
+      <td>—</td><td style="font-family:&#39;DM Mono&#39;">XXX</td>
+      <td>—</td><td><span class="pill pb-pill">Under Review</span></td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- LESSONS -->
+    <div class="sec" id="sec-lessons">
+      <div class="sec-title">Lessons Learned Register</div>
+      <div class="sec-sub">Sheet: "Lessons Learned" · Dammam Stadium · PROJECT SPECIFIC QUALITY FORMAT</div>
+      <div class="kpi-row" id="lessKpi" style="grid-template-columns:repeat(4,1fr)"><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#1e3a5f,#2563eb)"></div>
+      <div class="kpi-ico">📚</div><div class="kpi-lbl">Total Entries</div>
+      <div class="kpi-val" style="color:#1e3a5f">58</div>
+      <div class="kpi-meta">Logged lessons</div>
+      
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#15803d,#22c55e)"></div>
+      <div class="kpi-ico">🏗️</div><div class="kpi-lbl">Civil</div>
+      <div class="kpi-val" style="color:#15803d">24</div>
+      <div class="kpi-meta">Civil discipline</div>
+      <div class="kpi-bar"><div class="kpi-bar-f" style="background:#15803d;width:41%"></div></div>
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#0f766e,#2dd4bf)"></div>
+      <div class="kpi-ico">⚡</div><div class="kpi-lbl">MEP/Electrical</div>
+      <div class="kpi-val" style="color:#0f766e">14</div>
+      <div class="kpi-meta">MEP disciplines</div>
+      
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#7c3aed,#a78bfa)"></div>
+      <div class="kpi-ico">📋</div><div class="kpi-lbl">QA/QC</div>
+      <div class="kpi-val" style="color:#7c3aed">6</div>
+      <div class="kpi-meta">Quality entries</div>
+      
+    </div></div>
+      <div class="g2">
+        <div class="panel mb0">
+          <div class="ph"><div><div class="pt">Lessons by Discipline</div><div class="ps">All disciplines</div></div>
+            <div class="pa"><button class="bp" onclick="dlChart(&#39;lessDiscBar&#39;,&#39;Lessons_Discipline&#39;)">⬇ PNG</button><button class="bt" onclick="openModal(&#39;lessDiscModal&#39;)">📋 Table</button></div></div>
+          <div class="cw h300"><canvas id="lessDiscBar" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas></div></div>
+        <div class="panel mb0">
+          <div class="ph"><div><div class="pt">Lessons by Project Stage</div><div class="ps">Construction vs Mobilization</div></div>
+            <div class="pa"><button class="bp" onclick="dlChart(&#39;lessStageBar&#39;,&#39;Lessons_Stage&#39;)">⬇ PNG</button><button class="bt" onclick="openModal(&#39;lessStageModal&#39;)">📋 Table</button></div></div>
+          <div class="cw h300"><canvas id="lessStageBar" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas></div></div>
+      </div>
+      <div class="panel">
+        <div class="ph"><div><div class="pt">Lessons Learned — Full Register</div><div class="ps" id="lessTblSub">58 lessons learned entries</div></div>
+          <div class="pa"><button class="bt" onclick="openModal(&#39;lessFullModal&#39;)">⬇ CSV</button></div></div>
+        <div class="tw"><table class="dt"><thead><tr><th>#</th><th>Date</th><th>Stage</th><th>Discipline</th><th>Title</th><th>Author</th><th>Impact</th></tr></thead>
+        <tbody id="lessTbody"><tr><td>1</td><td style="font-family:&#39;DM Mono&#39;">May-24</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Civil</b></td>
+      <td>Concrete Pouring Delay</td>
+      <td style="color:var(--text2)">Abdelwahed Mohammed</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>2</td><td style="font-family:&#39;DM Mono&#39;">May-24</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Civil</b></td>
+      <td>Document approvals</td>
+      <td style="color:var(--text2)">Abdelwahed Mohammed</td>
+      <td style="color:var(--text2)">Quality</td></tr><tr><td>3</td><td style="font-family:&#39;DM Mono&#39;">May-24</td>
+      <td><span class="pill pa-pill">Mobilization</span></td><td><b>Civil</b></td>
+      <td>3rd Party Check Point</td>
+      <td style="color:var(--text2)">Abdelwahed Mohammed</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>4</td><td style="font-family:&#39;DM Mono&#39;">May-24</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Civil</b></td>
+      <td>Test Reference Standards</td>
+      <td style="color:var(--text2)">Abdelwahed Mohammed</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>5</td><td style="font-family:&#39;DM Mono&#39;">Jun-24</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Civil</b></td>
+      <td>Hot Weather/High Ambient Temperature</td>
+      <td style="color:var(--text2)">Abdelwahed Mohammed</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>6</td><td style="font-family:&#39;DM Mono&#39;">24-Jul</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Civil</b></td>
+      <td>Scarcity of 10 mm.Ø Steel Bars in the market</td>
+      <td style="color:var(--text2)">Mohamed Khalil</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>7</td><td style="font-family:&#39;DM Mono&#39;">24-Aug</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Civil</b></td>
+      <td>Delivered Steel Couplers without supporting updated MTC</td>
+      <td style="color:var(--text2)">Mohamed Khalil</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>8</td><td style="font-family:&#39;DM Mono&#39;">12-Sep</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Civil</b></td>
+      <td>Rebar Installation </td>
+      <td style="color:var(--text2)">Carlito Miranda </td>
+      <td style="color:var(--text2)">Quality /Construction</td></tr><tr><td>9</td><td style="font-family:&#39;DM Mono&#39;">25-Oct</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Civil</b></td>
+      <td>Concrete Pouring without MEP Clearance</td>
+      <td style="color:var(--text2)">Lito Geneta</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>10</td><td style="font-family:&#39;DM Mono&#39;">25-Nov</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Civil</b></td>
+      <td>Planting of Rebars using Hilti Chemical</td>
+      <td style="color:var(--text2)">Allyson Cancio</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>11</td><td style="font-family:&#39;DM Mono&#39;">25-Dec</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Civil</b></td>
+      <td>Raker Beam installation was done without complying with the …</td>
+      <td style="color:var(--text2)">Allyson Cancio</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>12</td><td style="font-family:&#39;DM Mono&#39;">15-Jan</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Civil</b></td>
+      <td>Improper Installation of Couplers</td>
+      <td style="color:var(--text2)">Allyson Cancio</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>13</td><td style="font-family:&#39;DM Mono&#39;">15-Feb</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Civil</b></td>
+      <td>Improper Handling and Protection on Rebars at stockyard area</td>
+      <td style="color:var(--text2)">Allyson Cancio</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>14</td><td style="font-family:&#39;DM Mono&#39;">16-Feb</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>MEP/Electrical</b></td>
+      <td>Damaged Electrical Embedded PVC Conduits/Sleeves</td>
+      <td style="color:var(--text2)">Allyson Cancio</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>15</td><td style="font-family:&#39;DM Mono&#39;">25-Feb</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Mechanical</b></td>
+      <td>Installation of PVC Pipes without Sand Bedding</td>
+      <td style="color:var(--text2)">Allyson Cancio</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>16</td><td style="font-family:&#39;DM Mono&#39;">5-Mar</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Multi-Discipline</b></td>
+      <td>Preservation, Storage &amp; Handling Requirements during Rainy W…</td>
+      <td style="color:var(--text2)">Allyson Cancio</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>17</td><td style="font-family:&#39;DM Mono&#39;">15-Mar</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Civil</b></td>
+      <td>Grouting of MEP Penetration /Openings without WIR &amp; Clearanc…</td>
+      <td style="color:var(--text2)">Allyson Cancio</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>18</td><td style="font-family:&#39;DM Mono&#39;">27-Mar</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Civil</b></td>
+      <td>Installation of UPVC Pipes without Sand Bedding</td>
+      <td style="color:var(--text2)">Md Zikrullah</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>19</td><td style="font-family:&#39;DM Mono&#39;">10-Apr</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Structural</b></td>
+      <td>Unapproved Work Execution on Permanent Steel Structure</td>
+      <td style="color:var(--text2)">Mohammad Azam Khan</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>20</td><td style="font-family:&#39;DM Mono&#39;">14-Apr</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Structural</b></td>
+      <td>Rusted washers used in permanent structure base plates</td>
+      <td style="color:var(--text2)">Mohammad Azam Khan</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>21</td><td style="font-family:&#39;DM Mono&#39;">15-Apr</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Telecom</b></td>
+      <td>Unapproved  Materials (Unifix Fishers) Installation at Site</td>
+      <td style="color:var(--text2)">Allyson Cancio</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>22</td><td style="font-family:&#39;DM Mono&#39;">25-Apr</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Structural</b></td>
+      <td>Welding of Steel Outer Ring using Manlift</td>
+      <td style="color:var(--text2)">Allyson Cancio</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>23</td><td style="font-family:&#39;DM Mono&#39;">30-Apr</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>MEP/Electrical</b></td>
+      <td>Cable Tray Installation at Outdoor Locations(L06-Top of Bowl…</td>
+      <td style="color:var(--text2)">Allyson Cancio</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>24</td><td style="font-family:&#39;DM Mono&#39;">5-May</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Structural</b></td>
+      <td>Focus Assessment on Welding Activity</td>
+      <td style="color:var(--text2)">Allyson Cancio</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>25</td><td style="font-family:&#39;DM Mono&#39;">12-May</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>MEP/Electrical</b></td>
+      <td>Conduit/Pull box extension at Core walls Pullout &amp; Coupler c…</td>
+      <td style="color:var(--text2)">Allyson Cancio</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>26</td><td style="font-family:&#39;DM Mono&#39;">20-May</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>MEP/Electrical</b></td>
+      <td>Damaged Electrical Embedded PVC Conduits/Sleeves</td>
+      <td style="color:var(--text2)">Anselmo Badato</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>27</td><td style="font-family:&#39;DM Mono&#39;">5-Jun-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Mechanical</b></td>
+      <td>Unauthorized Backfilling of Drainage Pipes Without Required …</td>
+      <td style="color:var(--text2)">Marlon Bautista</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>28</td><td style="font-family:&#39;DM Mono&#39;">10-Jun-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Mechanical</b></td>
+      <td>Missing Pipe Sleeves</td>
+      <td style="color:var(--text2)">Marlon Bautista</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>29</td><td style="font-family:&#39;DM Mono&#39;">13-Jun-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>MEP/Electrical</b></td>
+      <td>Conduit installation does not align with the latest revision…</td>
+      <td style="color:var(--text2)">Oscar P. Gascon</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>30</td><td style="font-family:&#39;DM Mono&#39;">24-Jun-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Mechanical</b></td>
+      <td>Fire Fighting Pipes Fallen from the Ceiling</td>
+      <td style="color:var(--text2)">Marlon Bautista</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>31</td><td style="font-family:&#39;DM Mono&#39;">12-Jul-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Civil</b></td>
+      <td>Core diameter has been increased without prior approval resu…</td>
+      <td style="color:var(--text2)">Lito Geneta</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>32</td><td style="font-family:&#39;DM Mono&#39;">14-Jul-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Civil</b></td>
+      <td>Application of Fire Rated Sealant without the approval of th…</td>
+      <td style="color:var(--text2)">Lito Geneta</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>33</td><td style="font-family:&#39;DM Mono&#39;">15-Jul-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Multi-Discipline</b></td>
+      <td>Handling &amp; Storage</td>
+      <td style="color:var(--text2)">Lito Geneta</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>34</td><td style="font-family:&#39;DM Mono&#39;">20-Jul-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>MEP/Electrical</b></td>
+      <td>Cable Tray Field Fabrication</td>
+      <td style="color:var(--text2)">Oscar Gascon</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>35</td><td style="font-family:&#39;DM Mono&#39;">30-Jul-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Architectural</b></td>
+      <td>Curing of Blockwork installation</td>
+      <td style="color:var(--text2)">Evan Villacarlos</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>36</td><td style="font-family:&#39;DM Mono&#39;">5-Aug-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Fire Fighting</b></td>
+      <td>Installation of Firefighting Pipes</td>
+      <td style="color:var(--text2)">Kabilan K</td>
+      <td style="color:var(--text2)">Quality/Construction/ Safety</td></tr><tr><td>37</td><td style="font-family:&#39;DM Mono&#39;">10-Aug-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Civil</b></td>
+      <td>Concrete Pouring  of Wall on Congested area</td>
+      <td style="color:var(--text2)">Ric Nuqui</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>38</td><td style="font-family:&#39;DM Mono&#39;">21-Aug-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Civil</b></td>
+      <td>Installation of Masonry walls without Lintel Beams on MEP Op…</td>
+      <td style="color:var(--text2)">Armando Santos</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>39</td><td style="font-family:&#39;DM Mono&#39;">27-Aug-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Multi-Discipline</b></td>
+      <td>Execution of Subsequent Activities Without Prior Approval of…</td>
+      <td style="color:var(--text2)">Lito Geneta</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>40</td><td style="font-family:&#39;DM Mono&#39;">4-Sep-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>MEP/Electrical</b></td>
+      <td>Inadequate Temporary Protection of Installed MEP Services</td>
+      <td style="color:var(--text2)">Anselmo Badato</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>41</td><td style="font-family:&#39;DM Mono&#39;">10-Sep-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Mechanical</b></td>
+      <td>Damage to Duct Insulation Due to MEP Clashes</td>
+      <td style="color:var(--text2)">Marcelo</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>42</td><td style="font-family:&#39;DM Mono&#39;">20-Sep-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Mechanical</b></td>
+      <td>Mechanical Material Rejections</td>
+      <td style="color:var(--text2)">Kabilan K</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>43</td><td style="font-family:&#39;DM Mono&#39;">25-Sep-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Multi-Discipline</b></td>
+      <td>ITP is not available during site execution</td>
+      <td style="color:var(--text2)">L. Geneta</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>44</td><td style="font-family:&#39;DM Mono&#39;">1-Oct-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Structural</b></td>
+      <td>Welding Electrode issuance log</td>
+      <td style="color:var(--text2)">Azam Khan</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>45</td><td style="font-family:&#39;DM Mono&#39;">13-Oct-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Civil</b></td>
+      <td>Mixing of Premix Concrete</td>
+      <td style="color:var(--text2)">Bernardo Velasco</td>
+      <td style="color:var(--text2)">Quality/Construction</td></tr><tr><td>46</td><td style="font-family:&#39;DM Mono&#39;">19-Oct-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Civil</b></td>
+      <td>Improper Surface Preparation Before Waterproofing</td>
+      <td style="color:var(--text2)">Armando Santos</td>
+      <td style="color:var(--text2)">Waterproofing failure, leakage, rework, time and cost impact.</td></tr><tr><td>47</td><td style="font-family:&#39;DM Mono&#39;">25-Oct-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Civil</b></td>
+      <td>Incorrect Tile Leveling (Lippage Issue)</td>
+      <td style="color:var(--text2)">Armando Santos</td>
+      <td style="color:var(--text2)">Rework, poor aesthetics, client dissatisfaction.</td></tr><tr><td>48</td><td style="font-family:&#39;DM Mono&#39;">3-Nov-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Multi-Discipline</b></td>
+      <td>Late Coordination Between Civil &amp; MEP Works</td>
+      <td style="color:var(--text2)">Muhammad Muttalib</td>
+      <td style="color:var(--text2)">Rework, cost increase, structural impact risk.</td></tr><tr><td>49</td><td style="font-family:&#39;DM Mono&#39;">8-Nov-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Civil</b></td>
+      <td>Incorrect Rebar Placement Before Concrete Pour</td>
+      <td style="color:var(--text2)">Augusto</td>
+      <td style="color:var(--text2)">Structural integrity issues, delays, extra material usage.</td></tr><tr><td>50</td><td style="font-family:&#39;DM Mono&#39;">15-Nov-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Civil</b></td>
+      <td>Poor Gypsum Board Joint Treatment</td>
+      <td style="color:var(--text2)">Armando Santos</td>
+      <td style="color:var(--text2)">Cracks on walls, repainting, rework cost.</td></tr><tr><td>51</td><td style="font-family:&#39;DM Mono&#39;">18-Nov-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>QA/QC</b></td>
+      <td>Delay in WIR Submission</td>
+      <td style="color:var(--text2)">Naqash Ahmad</td>
+      <td style="color:var(--text2)">Construction schedule and inspection activities</td></tr><tr><td>52</td><td style="font-family:&#39;DM Mono&#39;">27-Nov-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>MEP/Electrical</b></td>
+      <td>Unapproved Material Delivery</td>
+      <td style="color:var(--text2)">Waleed Raza</td>
+      <td style="color:var(--text2)">Quality compliance and risk of NCR</td></tr><tr><td>53</td><td style="font-family:&#39;DM Mono&#39;">6-Dec-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>QA/QC</b></td>
+      <td>Incomplete QA/QC Documentation</td>
+      <td style="color:var(--text2)">Muhammad Khalil</td>
+      <td style="color:var(--text2)">Inspection process and project timeline</td></tr><tr><td>54</td><td style="font-family:&#39;DM Mono&#39;">11-Dec-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>QA/QC</b></td>
+      <td>Improper Material Storage</td>
+      <td style="color:var(--text2)">Muhammad Azam</td>
+      <td style="color:var(--text2)">Material quality and compliance</td></tr><tr><td>55</td><td style="font-family:&#39;DM Mono&#39;">21-Dec-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>QA/QC</b></td>
+      <td>Incomplete QA/QC Documentation</td>
+      <td style="color:var(--text2)">Naqash Ahmad</td>
+      <td style="color:var(--text2)">Inspection process and project schedule</td></tr><tr><td>56</td><td style="font-family:&#39;DM Mono&#39;">27-Dec-25</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>QA/QC</b></td>
+      <td>Material Delivered Without Proper Approval</td>
+      <td style="color:var(--text2)">Venkatesh Karunanithi</td>
+      <td style="color:var(--text2)">Quality control and construction progress</td></tr><tr><td>57</td><td style="font-family:&#39;DM Mono&#39;">1-Jan-26</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>Multi-Discipline</b></td>
+      <td>Incorrect Installation as per Approved Drawings</td>
+      <td style="color:var(--text2)">Waleed Raza</td>
+      <td style="color:var(--text2)">Rework, quality, and project timeline</td></tr><tr><td>58</td><td style="font-family:&#39;DM Mono&#39;">10-Jan-26</td>
+      <td><span class="pill pc-pill">Construction/Execution</span></td><td><b>QA/QC</b></td>
+      <td>Delay in Inspection Request Submission</td>
+      <td style="color:var(--text2)">Awais Akram</td>
+      <td style="color:var(--text2)">Project progress and coordination</td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- COMMS -->
+    <div class="sec" id="sec-comms">
+      <div class="sec-title">Communication Records</div>
+      <div class="sec-sub">Sheet: "Communication records" · TQ, RFI, NCR, Site Instructions, Material Approvals</div>
+      <div class="kpi-row" id="commKpi" style="grid-template-columns:repeat(4,1fr)"><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#1e3a5f,#2563eb)"></div>
+      <div class="kpi-ico">📡</div><div class="kpi-lbl">Total Records</div>
+      <div class="kpi-val" style="color:#1e3a5f">0</div>
+      <div class="kpi-meta">Communications logged</div>
+      
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#15803d,#22c55e)"></div>
+      <div class="kpi-ico">✅</div><div class="kpi-lbl">Resolved</div>
+      <div class="kpi-val" style="color:#15803d">0</div>
+      <div class="kpi-meta">Closed/Approved/Done</div>
+      <div class="kpi-bar"><div class="kpi-bar-f" style="background:#15803d;width:0%"></div></div>
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#b45309,#f59e0b)"></div>
+      <div class="kpi-ico">⏳</div><div class="kpi-lbl">Open/Pending</div>
+      <div class="kpi-val" style="color:#b45309">0</div>
+      <div class="kpi-meta">Awaiting action</div>
+      
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#7c3aed,#a78bfa)"></div>
+      <div class="kpi-ico">📝</div><div class="kpi-lbl">Types</div>
+      <div class="kpi-val" style="color:#7c3aed">0</div>
+      <div class="kpi-meta">Unique types</div>
+      
+    </div></div>
+      <div class="g2">
+        <div class="panel mb0">
+          <div class="ph"><div><div class="pt">Communications by Type</div><div class="ps">All communication types</div></div>
+            <div class="pa"><button class="bp" onclick="dlChart(&#39;commTypeBar&#39;,&#39;Comms_Type&#39;)">⬇ PNG</button><button class="bt" onclick="openModal(&#39;commTypeModal&#39;)">📋 Table</button></div></div>
+          <div class="cw h300"><canvas id="commTypeBar" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas></div></div>
+        <div class="panel mb0">
+          <div class="ph"><div><div class="pt">Communication Status</div><div class="ps">Open / Closed / In Progress</div></div>
+            <div class="pa"><button class="bp" onclick="dlChart(&#39;commStatusBar&#39;,&#39;Comms_Status&#39;)">⬇ PNG</button></div></div>
+          <div class="cw h300"><canvas id="commStatusBar" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas></div></div>
+      </div>
+      <div class="panel">
+        <div class="ph"><div><div class="pt">Communication Log — Full Register</div><div class="ps" id="commTblSub">0 communication records</div></div>
+          <div class="pa"><button class="bt" onclick="openModal(&#39;commModal&#39;)">⬇ CSV</button></div></div>
+        <div class="tw"><table class="dt"><thead><tr><th>#</th><th>Date</th><th>Type</th><th>From</th><th>Subject</th><th>Ref</th><th>Method</th><th>Status</th></tr></thead>
+        <tbody id="commTbody"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- SNAGGING -->
+    <div class="sec" id="sec-snagging">
+      <div class="sec-title">Snagging &amp; De-Snagging Register</div>
+      <div class="sec-sub">Sheet: "Snagging &amp; De-Snagging" · SNAG ID, Discipline, Zone, Safety Category, Status</div>
+      <div class="kpi-row" id="snagKpi" style="grid-template-columns:repeat(4,1fr)"><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#1e3a5f,#2563eb)"></div>
+      <div class="kpi-ico">🔧</div><div class="kpi-lbl">Total Snags</div>
+      <div class="kpi-val" style="color:#1e3a5f">14</div>
+      <div class="kpi-meta">All raised snags</div>
+      
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#15803d,#22c55e)"></div>
+      <div class="kpi-ico">✅</div><div class="kpi-lbl">Closed</div>
+      <div class="kpi-val" style="color:#15803d">0</div>
+      <div class="kpi-meta">De-snagged</div>
+      <div class="kpi-bar"><div class="kpi-bar-f" style="background:#15803d;width:0%"></div></div>
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#dc2626,#ef4444)"></div>
+      <div class="kpi-ico">❌</div><div class="kpi-lbl">Open</div>
+      <div class="kpi-val" style="color:#dc2626">14</div>
+      <div class="kpi-meta">Still open</div>
+      
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#b45309,#f59e0b)"></div>
+      <div class="kpi-ico">⚠️</div><div class="kpi-lbl">Closure Rate</div>
+      <div class="kpi-val" style="color:#b45309">0%</div>
+      <div class="kpi-meta">% resolved</div>
+      
+    </div></div>
+      <div class="g2">
+        <div class="panel mb0">
+          <div class="ph"><div><div class="pt">Snags by Discipline</div><div class="ps">Open vs Closed per discipline</div></div>
+            <div class="pa"><button class="bp" onclick="dlChart(&#39;snagDiscBar&#39;,&#39;Snag_Discipline&#39;)">⬇ PNG</button><button class="bt" onclick="openModal(&#39;snagDiscModal&#39;)">📋 Table</button></div></div>
+          <div class="cw h300"><canvas id="snagDiscBar" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas></div></div>
+        <div class="panel mb0">
+          <div class="ph"><div><div class="pt">Snag Status Split</div><div class="ps">Open / Closed / In Progress</div></div>
+            <div class="pa"><button class="bp" onclick="dlChart(&#39;snagStatusChart&#39;,&#39;Snag_Status&#39;)">⬇ PNG</button></div></div>
+          <div class="cw h300"><canvas id="snagStatusChart" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas></div></div>
+      </div>
+      <div class="panel">
+        <div class="ph"><div><div class="pt">Snagging Register — All Entries</div><div class="ps" id="snagTblSub">--</div></div>
+          <div class="pa"><button class="bt" onclick="openModal(&#39;snagModal&#39;)">⬇ CSV</button></div></div>
+        <div class="tw"><table class="dt"><thead><tr><th>#</th><th>SNAG ID</th><th>Discipline</th><th>Zone</th><th>Category</th><th>Raised By</th><th>Status</th><th>Target Date</th></tr></thead>
+        <tbody id="snagTbody"><tr><td>1</td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td>—</td><td>—</td>
+        <td style="color:var(--text2)">—</td>
+        <td><span class="pill pc-pill">Open</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr><tr><td>2</td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td>—</td><td>—</td>
+        <td style="color:var(--text2)">—</td>
+        <td><span class="pill pc-pill">Open</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr><tr><td>3</td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td>—</td><td>—</td>
+        <td style="color:var(--text2)">—</td>
+        <td><span class="pill pc-pill">Open</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr><tr><td>4</td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td>—</td><td>—</td>
+        <td style="color:var(--text2)">—</td>
+        <td><span class="pill pc-pill">Open</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr><tr><td>5</td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td>—</td><td>—</td>
+        <td style="color:var(--text2)">—</td>
+        <td><span class="pill pc-pill">Open</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr><tr><td>6</td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td>—</td><td>—</td>
+        <td style="color:var(--text2)">—</td>
+        <td><span class="pill pc-pill">Open</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr><tr><td>7</td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td>—</td><td>—</td>
+        <td style="color:var(--text2)">—</td>
+        <td><span class="pill pc-pill">Open</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr><tr><td>8</td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td>—</td><td>—</td>
+        <td style="color:var(--text2)">—</td>
+        <td><span class="pill pc-pill">Open</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr><tr><td>9</td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td>—</td><td>—</td>
+        <td style="color:var(--text2)">—</td>
+        <td><span class="pill pc-pill">Open</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr><tr><td>10</td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td>—</td><td>—</td>
+        <td style="color:var(--text2)">—</td>
+        <td><span class="pill pc-pill">Open</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr><tr><td>11</td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td>—</td><td>—</td>
+        <td style="color:var(--text2)">—</td>
+        <td><span class="pill pc-pill">Open</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr><tr><td>12</td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td>—</td><td>—</td>
+        <td style="color:var(--text2)">—</td>
+        <td><span class="pill pc-pill">Open</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr><tr><td>13</td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td>—</td><td>—</td>
+        <td style="color:var(--text2)">—</td>
+        <td><span class="pill pc-pill">Open</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr><tr><td>14</td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td>—</td><td>—</td>
+        <td style="color:var(--text2)">—</td>
+        <td><span class="pill pc-pill">Open</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- T&C -->
+    <div class="sec" id="sec-tc">
+      <div class="sec-title">Testing &amp; Commissioning Register</div>
+      <div class="sec-sub">Sheet: "T&amp;C Register" · System, Equipment, Test Type, Status, Dates</div>
+      <div class="kpi-row" id="tcKpi" style="grid-template-columns:repeat(4,1fr)"><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#1e3a5f,#2563eb)"></div>
+      <div class="kpi-ico">⚡</div><div class="kpi-lbl">Total T&amp;C Items</div>
+      <div class="kpi-val" style="color:#1e3a5f">15</div>
+      <div class="kpi-meta">All T&amp;C entries</div>
+      
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#15803d,#22c55e)"></div>
+      <div class="kpi-ico">✅</div><div class="kpi-lbl">Passed/Complete</div>
+      <div class="kpi-val" style="color:#15803d">0</div>
+      <div class="kpi-meta">Tests completed</div>
+      <div class="kpi-bar"><div class="kpi-bar-f" style="background:#15803d;width:0%"></div></div>
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#b45309,#f59e0b)"></div>
+      <div class="kpi-ico">⏳</div><div class="kpi-lbl">Pending</div>
+      <div class="kpi-val" style="color:#b45309">15</div>
+      <div class="kpi-meta">Not yet complete</div>
+      
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#7c3aed,#a78bfa)"></div>
+      <div class="kpi-ico">🔧</div><div class="kpi-lbl">Systems</div>
+      <div class="kpi-val" style="color:#7c3aed">—</div>
+      <div class="kpi-meta">Unique systems</div>
+      
+    </div></div>
+      <div class="g2">
+        <div class="panel mb0">
+          <div class="ph"><div><div class="pt">T&amp;C by System</div><div class="ps">Status per system</div></div>
+            <div class="pa"><button class="bp" onclick="dlChart(&#39;tcSysBar&#39;,&#39;TC_System&#39;)">⬇ PNG</button><button class="bt" onclick="openModal(&#39;tcSysModal&#39;)">📋 Table</button></div></div>
+          <div class="cw h300"><canvas id="tcSysBar" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas></div></div>
+        <div class="panel mb0">
+          <div class="ph"><div><div class="pt">T&amp;C Status Split</div><div class="ps">Pass / Fail / Pending</div></div>
+            <div class="pa"><button class="bp" onclick="dlChart(&#39;tcStatusChart&#39;,&#39;TC_Status&#39;)">⬇ PNG</button></div></div>
+          <div class="cw h300"><canvas id="tcStatusChart" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas></div></div>
+      </div>
+      <div class="panel">
+        <div class="ph"><div><div class="pt">T&amp;C Register — All Entries</div><div class="ps" id="tcTblSub">--</div></div>
+          <div class="pa"><button class="bt" onclick="openModal(&#39;tcModal&#39;)">⬇ CSV</button></div></div>
+        <div class="tw"><table class="dt"><thead><tr><th>#</th><th>Sub-Con</th><th>System</th><th>Equipment</th><th>Tag No.</th><th>Test Type</th><th>Status</th><th>Date Completed</th></tr></thead>
+        <tbody id="tcTbody"><tr><td>1</td><td>—</td><td><b>—</b></td>
+        <td></td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td><span class="pill pe-pill">—</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr><tr><td>2</td><td>—</td><td><b>—</b></td>
+        <td></td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td><span class="pill pe-pill">—</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr><tr><td>3</td><td>—</td><td><b>—</b></td>
+        <td></td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td><span class="pill pe-pill">—</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr><tr><td>4</td><td>—</td><td><b>—</b></td>
+        <td></td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td><span class="pill pe-pill">—</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr><tr><td>5</td><td>—</td><td><b>—</b></td>
+        <td></td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td><span class="pill pe-pill">—</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr><tr><td>6</td><td>—</td><td><b>—</b></td>
+        <td></td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td><span class="pill pe-pill">—</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr><tr><td>7</td><td>—</td><td><b>—</b></td>
+        <td></td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td><span class="pill pe-pill">—</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr><tr><td>8</td><td>—</td><td><b>—</b></td>
+        <td></td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td><span class="pill pe-pill">—</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr><tr><td>9</td><td>—</td><td><b>—</b></td>
+        <td></td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td><span class="pill pe-pill">—</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr><tr><td>10</td><td>—</td><td><b>—</b></td>
+        <td></td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td><span class="pill pe-pill">—</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr><tr><td>11</td><td>—</td><td><b>—</b></td>
+        <td></td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td><span class="pill pe-pill">—</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr><tr><td>12</td><td>—</td><td><b>—</b></td>
+        <td></td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td><span class="pill pe-pill">—</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr><tr><td>13</td><td>—</td><td><b>—</b></td>
+        <td></td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td><span class="pill pe-pill">—</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr><tr><td>14</td><td>—</td><td><b>—</b></td>
+        <td></td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td><span class="pill pe-pill">—</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr><tr><td>14</td><td>—</td><td><b>—</b></td>
+        <td></td><td style="font-family:&#39;DM Mono&#39;">—</td>
+        <td>—</td><td><span class="pill pe-pill">—</span></td><td style="font-family:&#39;DM Mono&#39;"></td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- AUTHORITIES -->
+    <div class="sec" id="sec-authorities">
+      <div class="sec-title">Authorities Approvals</div>
+      <div class="sec-sub">Sheet: "Authorities Approvals" · Permit tracking, Issuing Authority, Status, Dates</div>
+      <div class="kpi-row" id="authKpi" style="grid-template-columns:repeat(4,1fr)"><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#1e3a5f,#2563eb)"></div>
+      <div class="kpi-ico">🏛️</div><div class="kpi-lbl">Total Approvals</div>
+      <div class="kpi-val" style="color:#1e3a5f">42</div>
+      <div class="kpi-meta">All authority items</div>
+      
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#15803d,#22c55e)"></div>
+      <div class="kpi-ico">✅</div><div class="kpi-lbl">Approved</div>
+      <div class="kpi-val" style="color:#15803d">0</div>
+      <div class="kpi-meta">Issued permits</div>
+      <div class="kpi-bar"><div class="kpi-bar-f" style="background:#15803d;width:0%"></div></div>
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#b45309,#f59e0b)"></div>
+      <div class="kpi-ico">⏳</div><div class="kpi-lbl">Pending</div>
+      <div class="kpi-val" style="color:#b45309">42</div>
+      <div class="kpi-meta">Not yet approved</div>
+      
+    </div><div class="kpi"><div class="kpi-stripe" style="background:linear-gradient(90deg,#7c3aed,#a78bfa)"></div>
+      <div class="kpi-ico">👥</div><div class="kpi-lbl">Sub-Contractors</div>
+      <div class="kpi-val" style="color:#7c3aed">—</div>
+      <div class="kpi-meta">Involved parties</div>
+      
+    </div></div>
+      <div class="g2">
+        <div class="panel mb0">
+          <div class="ph"><div><div class="pt">Approvals by Sub-Contractor</div><div class="ps">Status per sub-con</div></div>
+            <div class="pa"><button class="bp" onclick="dlChart(&#39;authSubBar&#39;,&#39;Auth_SubCon&#39;)">⬇ PNG</button><button class="bt" onclick="openModal(&#39;authModal&#39;)">📋 Table</button></div></div>
+          <div class="cw h300"><canvas id="authSubBar" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas></div></div>
+        <div class="panel mb0">
+          <div class="ph"><div><div class="pt">Approval Status Split</div><div class="ps">Overall approval breakdown</div></div>
+            <div class="pa"><button class="bp" onclick="dlChart(&#39;authStatusChart&#39;,&#39;Auth_Status&#39;)">⬇ PNG</button></div></div>
+          <div class="cw h300"><canvas id="authStatusChart" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas></div></div>
+      </div>
+      <div class="panel">
+        <div class="ph"><div><div class="pt">Authorities Register — All Entries</div><div class="ps" id="authTblSub">--</div></div>
+          <div class="pa"><button class="bt" onclick="openModal(&#39;authModal&#39;)">⬇ CSV</button></div></div>
+        <div class="tw"><table class="dt"><thead><tr><th>#</th><th>Sub-Con</th><th>Permit Title</th><th>Authority</th><th>System</th><th>Applied</th><th>Approved</th><th>Status</th></tr></thead>
+        <tbody id="authTbody"><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>1</td><td>—</td>
+        <td></td><td>—</td>
+        <td>—</td><td style="font-family:&#39;DM Mono&#39;"></td>
+        <td style="font-family:&#39;DM Mono&#39;"></td><td><span class="pill pe-pill">—</span></td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- CLOSEOUT -->
+    <div class="sec" id="sec-closeout">
+      <div class="sec-title">Final Closeout Items</div>
+      <div class="sec-sub">Sheets: "Final Cleaning Submission" · "Pest Control Reports" · "Specifications" · Zone-based tracking</div>
+      <div class="g3">
+        <div class="panel mb0">
+          <div class="ph"><div><div class="pt">Final Cleaning</div><div class="ps">By area/zone</div></div>
+            <div class="pa"><button class="bp" onclick="dlChart(&#39;cleanChart&#39;,&#39;Final_Cleaning&#39;)">⬇ PNG</button><button class="bt" onclick="openModal(&#39;cleanModal&#39;)">📋 Table</button></div></div>
+          <div class="cw h240"><canvas id="cleanChart" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas></div></div>
+        <div class="panel mb0">
+          <div class="ph"><div><div class="pt">Pest Control</div><div class="ps">By zone / service type</div></div>
+            <div class="pa"><button class="bp" onclick="dlChart(&#39;pestChart&#39;,&#39;Pest_Control&#39;)">⬇ PNG</button><button class="bt" onclick="openModal(&#39;pestModal&#39;)">📋 Table</button></div></div>
+          <div class="cw h240"><canvas id="pestChart" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas></div></div>
+        <div class="panel mb0">
+          <div class="ph"><div><div class="pt">Specifications</div><div class="ps">Zone breakdown</div></div>
+            <div class="pa"><button class="bp" onclick="dlChart(&#39;specChart&#39;,&#39;Specifications&#39;)">⬇ PNG</button><button class="bt" onclick="openModal(&#39;specModal&#39;)">📋 Table</button></div></div>
+          <div class="cw h240"><canvas id="specChart" height="0" style="display: block; box-sizing: border-box; height: 0px; width: 0px;" width="0"></canvas></div></div>
+      </div>
+      <div class="panel">
+        <div class="ph"><div><div class="pt">Closeout Register — Combined View</div><div class="ps" id="coTblSub">32 entries across Final Cleaning, Pest Control and Specifications</div></div>
+          <div class="pa"><button class="bt" onclick="openModal(&#39;cleanModal&#39;)">⬇ CSV</button></div></div>
+        <div class="tw"><table class="dt"><thead><tr><th>#</th><th>Sheet</th><th>Area / Zone</th><th>Category</th><th>Description</th><th>Status</th></tr></thead>
+        <tbody id="coTbody"><tr><td>1</td><td><b>Final Cleaning</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>2</td><td><b>Final Cleaning</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>3</td><td><b>Final Cleaning</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>4</td><td><b>Final Cleaning</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>5</td><td><b>Final Cleaning</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>6</td><td><b>Final Cleaning</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>7</td><td><b>Final Cleaning</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>8</td><td><b>Final Cleaning</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>9</td><td><b>Final Cleaning</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>10</td><td><b>Final Cleaning</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>11</td><td><b>Final Cleaning</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>12</td><td><b>Final Cleaning</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>13</td><td><b>Pest Control</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>14</td><td><b>Pest Control</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>15</td><td><b>Pest Control</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>16</td><td><b>Pest Control</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>17</td><td><b>Pest Control</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>18</td><td><b>Pest Control</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>19</td><td><b>Pest Control</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>20</td><td><b>Pest Control</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>21</td><td><b>Pest Control</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>22</td><td><b>Pest Control</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>23</td><td><b>Specifications</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>24</td><td><b>Specifications</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>25</td><td><b>Specifications</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>26</td><td><b>Specifications</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>27</td><td><b>Specifications</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>28</td><td><b>Specifications</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>29</td><td><b>Specifications</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>30</td><td><b>Specifications</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>31</td><td><b>Specifications</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr><tr><td>32</td><td><b>Specifications</b></td><td>—</td>
+        <td>—</td><td></td><td><span class="pill pe-pill">—</span></td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- UPLOAD (admin only) -->
+    <div class="sec" id="sec-upload">
+      <div class="sec-title">Upload Data</div>
+      <div class="sec-sub">Upload the latest DSP Excel file — every chart, KPI, gauge and table refreshes automatically</div>
+
+      <div class="upload-hero loaded" id="uploadHero">
+        <div class="uh-ico" id="uhIco">✅</div>
+        <div class="uh-title" id="uhTitle">✅ File Loaded — Dashboard Live</div>
+        <div class="uh-sub" id="uhSub">All charts and tables have been updated with your latest data</div>
+        <label class="uh-btn" for="xlsxIn">📎 &nbsp;Choose Excel File</label>
+        <input type="file" id="xlsxIn" class="uh-input" accept=".xlsx,.xls,.csv" onchange="handleUpload(event)">
+        <div class="uh-status" id="uhStatus">✅ "DSP Stadium Closeout Tracker Progress Update K.S.xlsx" loaded — 24 sheets detected</div>
+        <div class="uh-sheets" id="uhSheets"><span class="uh-sheet loaded">✓ 1. LOD 500 Tracker</span><span class="uh-sheet loaded">✓ Redline Markup Drawings</span><span class="uh-sheet loaded">✓ 2. As-Built Drawings</span><span class="uh-sheet loaded">✓ 3. Asset Register</span><span class="uh-sheet loaded">✓ Warranty Register</span><span class="uh-sheet loaded">✓ 4. O&amp;M Manual Reg.</span><span class="uh-sheet loaded">✓ 5. Warranty Schedule</span><span class="uh-sheet loaded">✓ 30. Master Key Schedule</span><span class="uh-sheet loaded">✓ Communication records</span><span class="uh-sheet loaded">✓ Tools, spare parts and extra st</span><span class="uh-sheet loaded">✓ Authorities Approvals</span><span class="uh-sheet loaded">✓ Spare Parts Schedule</span><span class="uh-sheet loaded">✓ Manufacturer Specific Tools</span><span class="uh-sheet loaded">✓ 24. Training Manuals</span><span class="uh-sheet loaded">✓ 25. Demonstration &amp; Training</span><span class="uh-sheet loaded">✓ 32. Maintenance Register</span><span class="uh-sheet loaded">✓ Sustainability</span><span class="uh-sheet loaded">✓ Snagging &amp; De-Snagging</span><span class="uh-sheet loaded">✓ T&amp;C Register</span><span class="uh-sheet loaded">✓ Certificate of Insurance</span><span class="uh-sheet loaded">✓ Lessons Learned </span><span class="uh-sheet loaded">✓ Final Cleaning Submission</span><span class="uh-sheet loaded">✓ Pest Control Reports</span><span class="uh-sheet loaded">✓ Specifications</span></div>
+      </div>
+
+      <div class="panel">
+        <div class="ph"><div class="pt">Detected Sheets &amp; Row Counts</div><div class="ps">Updated after each upload</div></div>
+        <div class="tw"><table class="dt"><thead><tr><th>#</th><th>Sheet Name</th><th>Data Rows</th><th>Status</th></tr></thead>
+        <tbody id="sheetsTbody"><tr><td>1</td><td><b>1. LOD 500 Tracker</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">180</td>
+      <td><span class="pill pa-pill">DATA LOADED</span></td></tr><tr><td>2</td><td><b>Redline Markup Drawings</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">1,606</td>
+      <td><span class="pill pa-pill">DATA LOADED</span></td></tr><tr><td>3</td><td><b>2. As-Built Drawings</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">3,703</td>
+      <td><span class="pill pa-pill">DATA LOADED</span></td></tr><tr><td>4</td><td><b>3. Asset Register</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">942</td>
+      <td><span class="pill pa-pill">DATA LOADED</span></td></tr><tr><td>5</td><td><b>Warranty Register</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">15</td>
+      <td><span class="pill pa-pill">DATA LOADED</span></td></tr><tr><td>6</td><td><b>4. O&amp;M Manual Reg.</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">44</td>
+      <td><span class="pill pa-pill">DATA LOADED</span></td></tr><tr><td>7</td><td><b>5. Warranty Schedule</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">97</td>
+      <td><span class="pill pa-pill">DATA LOADED</span></td></tr><tr><td>8</td><td><b>30. Master Key Schedule</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">13</td>
+      <td><span class="pill pa-pill">DATA LOADED</span></td></tr><tr><td>9</td><td><b>Communication records</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">15</td>
+      <td><span class="pill pa-pill">DATA LOADED</span></td></tr><tr><td>10</td><td><b>Tools, spare parts and extra st</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">0</td>
+      <td><span class="pill pe-pill">TEMPLATE ONLY</span></td></tr><tr><td>11</td><td><b>Authorities Approvals</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">43</td>
+      <td><span class="pill pa-pill">DATA LOADED</span></td></tr><tr><td>12</td><td><b>Spare Parts Schedule</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">18</td>
+      <td><span class="pill pa-pill">DATA LOADED</span></td></tr><tr><td>13</td><td><b>Manufacturer Specific Tools</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">15</td>
+      <td><span class="pill pa-pill">DATA LOADED</span></td></tr><tr><td>14</td><td><b>24. Training Manuals</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">13</td>
+      <td><span class="pill pa-pill">DATA LOADED</span></td></tr><tr><td>15</td><td><b>25. Demonstration &amp; Training</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">21</td>
+      <td><span class="pill pa-pill">DATA LOADED</span></td></tr><tr><td>16</td><td><b>32. Maintenance Register</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">13</td>
+      <td><span class="pill pa-pill">DATA LOADED</span></td></tr><tr><td>17</td><td><b>Sustainability</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">4</td>
+      <td><span class="pill pa-pill">DATA LOADED</span></td></tr><tr><td>18</td><td><b>Snagging &amp; De-Snagging</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">15</td>
+      <td><span class="pill pa-pill">DATA LOADED</span></td></tr><tr><td>19</td><td><b>T&amp;C Register</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">16</td>
+      <td><span class="pill pa-pill">DATA LOADED</span></td></tr><tr><td>20</td><td><b>Certificate of Insurance</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">9</td>
+      <td><span class="pill pa-pill">DATA LOADED</span></td></tr><tr><td>21</td><td><b>Lessons Learned </b></td>
+      <td style="font-family:&#39;DM Mono&#39;">61</td>
+      <td><span class="pill pa-pill">DATA LOADED</span></td></tr><tr><td>22</td><td><b>Final Cleaning Submission</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">13</td>
+      <td><span class="pill pa-pill">DATA LOADED</span></td></tr><tr><td>23</td><td><b>Pest Control Reports</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">11</td>
+      <td><span class="pill pa-pill">DATA LOADED</span></td></tr><tr><td>24</td><td><b>Specifications</b></td>
+      <td style="font-family:&#39;DM Mono&#39;">11</td>
+      <td><span class="pill pa-pill">DATA LOADED</span></td></tr></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ADMIN -->
+    <div class="sec" id="sec-admin">
+      <div class="sec-title">Admin Panel</div>
+      <div class="sec-sub">User management and access control</div>
+      <div class="panel">
+        <div class="ph"><div class="pt">User Accounts</div></div>
+        <table class="dt"><thead><tr><th>Username</th><th>Role</th><th>Access Level</th><th>Upload</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><b>admin</b></td><td>Administrator</td><td>Full Access + Download</td><td><span class="pill pa-pill">YES</span></td><td><span class="pill pa-pill">ACTIVE</span></td></tr>
+          <tr><td><b>viewer</b></td><td>Viewer</td><td>Read Only + Download</td><td><span class="pill pd-pill">NO</span></td><td><span class="pill pa-pill">ACTIVE</span></td></tr>
+          <tr><td><b>manager</b></td><td>Manager</td><td>Read + Export CSV</td><td><span class="pill pd-pill">NO</span></td><td><span class="pill pa-pill">ACTIVE</span></td></tr>
+        </tbody></table>
+      </div>
+      <div class="panel" style="margin-top:14px">
+        <div class="ph"><div class="pt">Access Rules</div></div>
+        <table class="dt"><thead><tr><th>Feature</th><th>Admin</th><th>Manager</th><th>Viewer</th></tr></thead>
+        <tbody>
+          <tr><td>View all charts &amp; tabs</td><td>✅</td><td>✅</td><td>✅</td></tr>
+          <tr><td>Download PNG charts</td><td>✅</td><td>✅</td><td>✅</td></tr>
+          <tr><td>Download CSV tables</td><td>✅</td><td>✅</td><td>❌</td></tr>
+          <tr><td>Upload Excel data file</td><td>✅</td><td>❌</td><td>❌</td></tr>
+          <tr><td>Access Upload tab</td><td>✅</td><td>❌</td><td>❌</td></tr>
+          <tr><td>Access Admin tab</td><td>✅</td><td>❌</td><td>❌</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+  </div>
+  <footer>DSP Stadium Closeout Tracker · <b>Aramco Stadium, Dammam</b> · Confidential · © 2025 · Upload Excel to refresh live data</footer>
+</div>
+
+<!-- MODAL -->
+<div class="mov" id="modalOv" onclick="closeMod(event)">
+  <div class="mbox">
+    <div class="mh"><div class="mt" id="mTitle">Data Table</div>
+      <div class="mas"><button class="mdl" onclick="dlModalCSV()">⬇ Download CSV</button><button class="mx" onclick="closeMod()">✕</button></div></div>
+    <div class="mb-body" id="mBody"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════════════════════
+const USERS={admin:{pass:'admin2025',name:'Admin',role:'admin'},viewer:{pass:'view123',name:'Viewer',role:'viewer'},manager:{pass:'mgr@2025',name:'Manager',role:'viewer'}};
+let CUR_ROLE='viewer';
+function setRole(r,el){document.querySelectorAll('.lg-tab').forEach((t,i)=>t.classList.toggle('active',i===(r==='admin'?0:1)));}
+function doLogin(){
+  const u=document.getElementById('uIn').value.trim().toLowerCase(),p=document.getElementById('pIn').value;
+  const e=document.getElementById('lgErr');
+  if(USERS[u]&&USERS[u].pass===p){
+    CUR_ROLE=USERS[u].role;
+    const isAdmin=CUR_ROLE==='admin';
+    document.getElementById('login').style.display='none';
+    document.getElementById('app').style.display='block';
+    document.getElementById('navUser').textContent=USERS[u].name;
+    document.getElementById('navRole').textContent=CUR_ROLE.toUpperCase();
+    document.getElementById('navRole').classList.toggle('admin',isAdmin);
+    document.getElementById('navDate').textContent=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+    // Upload tab + Admin tab only visible to admin
+    document.querySelectorAll('.upload-tab').forEach(el=>el.style.display=isAdmin?'':'none');
+    document.querySelectorAll('.admin-tab').forEach(el=>el.style.display=isAdmin?'':'none');
+    // noDataBanner only for admin, only when no data loaded
+    const banner=document.getElementById('noDataBanner');
+    if(banner) banner.style.display=isAdmin&&!Object.keys(LIVE_DATA).length?'flex':'none';
+    e.style.display='none';
+    renderEmptyStates();
+  } else { e.style.display='block'; }
+}
+function doLogout(){document.getElementById('login').style.display='flex';document.getElementById('app').style.display='none';document.getElementById('pIn').value='';}
+function goTab(id,el){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('sec-'+id)?.classList.add('on');
+  el?.classList.add('on');
+}
+
+// ═══════════════════════════════════════════════════════════
+// CHART REGISTRY — track all chart instances
+// ═══════════════════════════════════════════════════════════
+const CHARTS={};
+function destroyChart(id){if(CHARTS[id]){CHARTS[id].destroy();delete CHARTS[id];}}
+const CB=['#2563eb','#15803d','#0f766e','#7c3aed','#b45309','#dc2626','#1d4ed8','#059669','#d97706','#9333ea','#0891b2','#be185d'];
+const GRID='rgba(100,116,139,0.08)';
+const F='Plus Jakarta Sans';
+const baseO={responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{labels:{font:{family:F,size:11},color:'#64748b',boxWidth:11}},
+    tooltip:{backgroundColor:'#1e293b',titleColor:'#f1f5f9',bodyColor:'#cbd5e1',borderColor:'#334155',borderWidth:1,padding:11,
+      titleFont:{family:F,size:12},bodyFont:{family:'DM Mono',size:11}}},
+  scales:{x:{grid:{color:GRID},ticks:{color:'#94a3b8',font:{family:'DM Mono',size:10}}},
+          y:{grid:{color:GRID},ticks:{color:'#94a3b8',font:{family:'DM Mono',size:10}}}}};
+
+function mkHBar(id,labels,datasets){
+  destroyChart(id); const c=document.getElementById(id); if(!c)return;
+  CHARTS[id]=new Chart(c,{type:'bar',data:{labels,datasets},options:{...baseO,indexAxis:'y',
+    scales:{x:{...baseO.scales.x},y:{...baseO.scales.y,ticks:{...baseO.scales.y.ticks,font:{family:'DM Mono',size:10}}}}}});
+}
+function mkVBar(id,labels,datasets,stacked=false){
+  destroyChart(id); const c=document.getElementById(id); if(!c)return;
+  CHARTS[id]=new Chart(c,{type:'bar',data:{labels,datasets},options:{...baseO,
+    scales:{x:{...baseO.scales.x,stacked},y:{...baseO.scales.y,stacked}}}});
+}
+function mkDonut(id,labels,data,colors){
+  destroyChart(id); const c=document.getElementById(id); if(!c)return;
+  CHARTS[id]=new Chart(c,{type:'doughnut',data:{labels,datasets:[{data,backgroundColor:colors,borderWidth:2,borderColor:'#fff',hoverOffset:5}]},
+    options:{...baseO,cutout:'66%',scales:{},plugins:{...baseO.plugins,legend:{position:'right',labels:{font:{family:F,size:11},color:'#64748b',boxWidth:11}}}}});
+}
+
+// ═══════════════════════════════════════════════════════════
+// GAUGE BUILDER
+// ═══════════════════════════════════════════════════════════
+function mkGauge(pct,color){
+  const r=54,cx=70,cy=70,sw=10,circ=Math.PI*r,fill=circ*(Math.min(100,Math.max(0,pct))/100);
+  return `<svg class="gsvg" viewBox="0 0 140 80">
+    <path d="M ${cx-r},${cy} A ${r},${r} 0 0,1 ${cx+r},${cy}" fill="none" stroke="#e2e8f0" stroke-width="${sw}" stroke-linecap="round"/>
+    <path d="M ${cx-r},${cy} A ${r},${r} 0 0,1 ${cx+r},${cy}" fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="round"
+      stroke-dasharray="${fill} ${circ}"/></svg><div class="gv" style="color:${color}">${Math.round(pct)}%</div>`;
+}
+function renderGauges(data){
+  const row=document.getElementById('gaugeRow'); row.innerHTML='';
+  data.forEach(g=>{
+    row.innerHTML+=`<div class="gc"><div class="gc-lbl">${g.label}</div>
+      <div class="gw">${mkGauge(g.pct,g.color)}</div>
+      <div class="gc-note">${g.note}</div></div>`;
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// KPI BUILDER
+// ═══════════════════════════════════════════════════════════
+function mkKpi(id,items){
+  const el=document.getElementById(id); if(!el)return; el.innerHTML='';
+  items.forEach(k=>{
+    el.innerHTML+=`<div class="kpi"><div class="kpi-stripe" style="background:${k.stripe}"></div>
+      <div class="kpi-ico">${k.ico}</div><div class="kpi-lbl">${k.lbl}</div>
+      <div class="kpi-val" style="color:${k.color}">${k.val}</div>
+      <div class="kpi-meta">${k.meta}</div>
+      ${k.pct!==undefined?`<div class="kpi-bar"><div class="kpi-bar-f" style="background:${k.color};width:${k.pct}%"></div></div>`:''}
+    </div>`;
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// PILL HELPERS
+// ═══════════════════════════════════════════════════════════
+function sPill(s){
+  if(!s)return '<span class="pill pe-pill">—</span>';
+  const sl=s.toString().toLowerCase();
+  if(['approved','a','completed','closed','done','pass','yes'].some(x=>sl.includes(x)))return`<span class="pill pa-pill">${s}</span>`;
+  if(['in review','b','in progress','ongoing','under review','ur'].some(x=>sl.includes(x)))return`<span class="pill pb-pill">${s}</span>`;
+  if(['pending','c','awaiting','open','not started'].some(x=>sl.includes(x)))return`<span class="pill pc-pill">${s}</span>`;
+  if(['fail','rejected','behind','critical'].some(x=>sl.includes(x)))return`<span class="pill pd-pill">${s}</span>`;
+  return`<span class="pill pe-pill">${s}</span>`;
+}
+function miniBar(pct,color){return`<div class="mb"><div class="mbf" style="width:${pct}%;background:${color}"></div></div>`;}
+
+// ═══════════════════════════════════════════════════════════
+// EMPTY STATES
+// ═══════════════════════════════════════════════════════════
+function emptyState(tbodyId,cols){
+  const tb=document.getElementById(tbodyId); if(!tb)return;
+  tb.innerHTML=`<tr><td colspan="${cols}" style="text-align:center;padding:32px;color:var(--text2)">
+    <div style="font-size:28px;margin-bottom:8px">📂</div>
+    <div style="font-size:13px">Upload your Excel file to populate this table</div></td></tr>`;
+}
+function renderEmptyStates(){
+  ['abTbody','lodTbody','warTbody','lessTbody','commTbody','snagTbody','tcTbody','authTbody','coTbody'].forEach(id=>{
+    emptyState(id,8);
+  });
+  // Empty KPIs
+  ['ovKpi','abKpi','lodKpi','warKpi','lessKpi','commKpi','snagKpi','tcKpi','authKpi'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.innerHTML='';
+  });
+  renderGauges([
+    {label:'As-Built Progress',pct:0,color:'#2563eb',note:'Upload file'},
+    {label:'LOD 500 Fill Rate',pct:0,color:'#b45309',note:'Upload file'},
+    {label:'Warranty Approved',pct:0,color:'#15803d',note:'Upload file'},
+    {label:'Comms Resolved',pct:0,color:'#0f766e',note:'Upload file'},
+  ]);
+}
+
+// ═══════════════════════════════════════════════════════════
+// MAIN UPLOAD HANDLER
+// ═══════════════════════════════════════════════════════════
+let LIVE_DATA={};
+let modalRegistry={};
+
+function handleUpload(e){
+  const file=e.target.files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      const wb=XLSX.read(ev.target.result,{type:'binary',cellDates:true});
+      LIVE_DATA={};
+      // Parse every sheet
+      wb.SheetNames.forEach(name=>{
+        const ws=wb.Sheets[name];
+        const raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:null,raw:false});
+        LIVE_DATA[name]=raw;
+      });
+      onDataLoaded(file.name, wb.SheetNames);
+    }catch(err){
+      document.getElementById('uhStatus').textContent='❌ Error: '+err.message;
+      document.getElementById('uhStatus2').textContent='❌ Error: '+err.message;
+    }
+  };
+  reader.readAsBinaryString(file);
+}
+
+function onDataLoaded(filename, sheetNames){
+  // Update upload UI
+  const uhStatus=document.getElementById('uhStatus');
+  if(uhStatus)uhStatus.textContent=`✅ "${filename}" loaded — ${sheetNames.length} sheets detected`;
+
+  const uhTitle=document.getElementById('uhTitle');
+  if(uhTitle)uhTitle.textContent='✅ File Loaded — Dashboard Live';
+  const uhSub=document.getElementById('uhSub');
+  if(uhSub)uhSub.innerHTML='All charts and tables have been updated with your latest data';
+  const uhIco=document.getElementById('uhIco');
+  if(uhIco)uhIco.textContent='✅';
+  document.getElementById('uploadHero')?.classList.add('loaded');
+  document.getElementById('dataBadge')?.classList.add('live');
+
+  // Hide noDataBanner now that data is loaded
+  const banner=document.getElementById('noDataBanner');
+  if(banner)banner.style.display='none';
+
+  // Sheet badges
+  const uhSheets=document.getElementById('uhSheets');
+  if(uhSheets){uhSheets.innerHTML='';sheetNames.forEach(s=>{uhSheets.innerHTML+=`<span class="uh-sheet loaded">✓ ${s}</span>`;});}
+
+  // Sheet summary table
+  buildSheetsSummary(sheetNames);
+
+  // Process all sections
+  processAsBuilt();
+  processLOD();
+  processWarranty();
+  processLessons();
+  processComms();
+  processSnagging();
+  processTC();
+  processAuthorities();
+  processCloseout();
+  buildOverview();
+}
+
+// ═══════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════
+function getSheet(name){return LIVE_DATA[name]||[];}
+function getRows(name,headerRow=1){
+  const d=getSheet(name); if(d.length<=headerRow)return{headers:[],rows:[]};
+  const headers=d[headerRow]||[];
+  const rows=d.slice(headerRow+1).filter(r=>r&&r.some(v=>v!==null&&v!==''));
+  return{headers,rows};
+}
+function countBy(rows,colIdx){
+  const m={}; rows.forEach(r=>{const v=r[colIdx]||'Unknown'; m[v]=(m[v]||0)+1;}); return m;
+}
+function topN(obj,n=10){return Object.entries(obj).sort((a,b)=>b[1]-a[1]).slice(0,n);}
+function fmtDate(v){if(!v)return'';if(v instanceof Date)return v.toISOString().slice(0,10);return String(v).slice(0,10);}
+
+function buildSheetsSummary(names){
+  const tb=document.getElementById('sheetsTbody'); if(!tb)return; tb.innerHTML='';
+  names.forEach((name,i)=>{
+    const d=getSheet(name);
+    const rows=d.slice(2).filter(r=>r&&r.some(v=>v!==null&&v!=='')).length;
+    tb.innerHTML+=`<tr><td>${i+1}</td><td><b>${name}</b></td>
+      <td style="font-family:'DM Mono'">${rows.toLocaleString()}</td>
+      <td>${rows>0?'<span class="pill pa-pill">DATA LOADED</span>':'<span class="pill pe-pill">TEMPLATE ONLY</span>'}</td></tr>`;
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// AS-BUILT DRAWINGS
+// ═══════════════════════════════════════════════════════════
+function processAsBuilt(){
+  const name='2. As-Built Drawings';
+  const d=getSheet(name); if(!d.length)return;
+  // Headers at row 2 (index 1), data from row 3 (index 2)
+  const dataRows=d.slice(2).filter(r=>r&&r[1]&&String(r[1])!=='ORIGINATOR'&&String(r[1]).trim()!=='');
+  const total=dataRows.length;
+  const origCounts=countBy(dataRows,1);
+  const top=topN(origCounts,10);
+  const origLabels=top.map(x=>x[0]), origVals=top.map(x=>x[1]);
+
+  document.getElementById('abSubTitle').textContent=`${total.toLocaleString()} total drawings · ${Object.keys(origCounts).length} originators`;
+  document.getElementById('abTblSub').textContent=`${total.toLocaleString()} drawings across ${Object.keys(origCounts).length} originators`;
+  document.getElementById('ovSub').textContent=`Aramco Stadium, Dammam · ${total.toLocaleString()} As-Built Drawings loaded`;
+
+  mkKpi('abKpi',[
+    {ico:'📐',lbl:'Total Drawings',val:total.toLocaleString(),color:'#2563eb',stripe:'linear-gradient(90deg,#1e3a5f,#2563eb)',meta:'All tracked drawings',pct:Math.min(100,Math.round(total/1650*100))},
+    {ico:'👤',lbl:'Originators',val:Object.keys(origCounts).length,color:'#15803d',stripe:'linear-gradient(90deg,#15803d,#22c55e)',meta:'Unique originators'},
+    {ico:'🏆',lbl:'Top Originator',val:origLabels[0]||'—',color:'#0f766e',stripe:'linear-gradient(90deg,#0f766e,#2dd4bf)',meta:`${origVals[0]||0} drawings`},
+    {ico:'📊',lbl:'Avg Per Originator',val:Object.keys(origCounts).length?Math.round(total/Object.keys(origCounts).length):0,color:'#7c3aed',stripe:'linear-gradient(90deg,#7c3aed,#a78bfa)',meta:'drawings per person'},
+  ]);
+
+  mkHBar('abBar',origLabels,[{label:'Drawings',data:origVals,backgroundColor:CB.slice(0,origLabels.length),borderRadius:4,borderSkipped:false}]);
+  mkHBar('origChart',origLabels,[{label:'Drawings',data:origVals,backgroundColor:CB.slice(0,origLabels.length),borderRadius:4,borderSkipped:false}]);
+  mkDonut('abDonut',origLabels,origVals,CB);
+
+  // Table
+  const tb=document.getElementById('abTbody'); if(!tb)return; tb.innerHTML='';
+  top.forEach(([orig,cnt],i)=>{
+    const pct=((cnt/total)*100).toFixed(1);
+    tb.innerHTML+=`<tr><td>${i+1}</td><td><b>${orig}</b></td>
+      <td style="font-family:'DM Mono'">${cnt.toLocaleString()}</td>
+      <td style="font-family:'DM Mono'">${pct}%</td>
+      <td>${miniBar(pct,CB[i%CB.length])}<span style="font-size:11px;font-family:'DM Mono'">${pct}%</span></td></tr>`;
+  });
+
+  modalRegistry.origModal={title:'As-Built Drawings by Originator',cols:['#','Originator','Count','% Share'],
+    rows:top.map(([o,c],i)=>[i+1,o,c,((c/total)*100).toFixed(1)+'%'])};
+}
+
+// ═══════════════════════════════════════════════════════════
+// LOD 500
+// ═══════════════════════════════════════════════════════════
+function processLOD(){
+  const name='1. LOD 500 Tracker';
+  const d=getSheet(name); if(!d.length)return;
+  const dataRows=d.slice(2).filter(r=>r&&r[1]==='Aramco Stadium');
+  const total=dataRows.length;
+  const scCounts=countBy(dataRows,3);
+  const discCounts=countBy(dataRows,4);
+  const statusCounts=countBy(dataRows,22);
+  const filledRows=dataRows.filter(r=>r[3]||r[4]);
+  const fillPct=total>0?Math.round(filledRows.length/total*100):0;
+
+  mkKpi('lodKpi',[
+    {ico:'🏗️',lbl:'Total Items',val:total.toLocaleString(),color:'#1e3a5f',stripe:'linear-gradient(90deg,#1e3a5f,#2563eb)',meta:'LOD 500 register'},
+    {ico:'✅',lbl:'With Sub-Con',val:filledRows.length,color:'#15803d',stripe:'linear-gradient(90deg,#15803d,#22c55e)',meta:'Assigned items',pct:fillPct},
+    {ico:'⏳',lbl:'Pending Fill',val:total-filledRows.length,color:'#b45309',stripe:'linear-gradient(90deg,#b45309,#f59e0b)',meta:'Awaiting data'},
+    {ico:'👥',lbl:'Sub-Contractors',val:Object.keys(scCounts).filter(k=>k!=='Unknown'&&k!=='null').length,color:'#7c3aed',stripe:'linear-gradient(90deg,#7c3aed,#a78bfa)',meta:'Assigned'},
+  ]);
+
+  const scTop=topN(scCounts,8).filter(([k])=>k!=='Unknown'&&k!=='null');
+  const discTop=topN(discCounts,8).filter(([k])=>k!=='Unknown'&&k!=='null');
+
+  if(scTop.length>0){
+    mkVBar('lodBar',scTop.map(x=>x[0]),[{label:'Items',data:scTop.map(x=>x[1]),backgroundColor:CB,borderRadius:4}]);
+  } else {
+    mkVBar('lodBar',['Assigned','Pending'],[{label:'Items',data:[filledRows.length,total-filledRows.length],backgroundColor:['#15803d','#e2e8f0'],borderRadius:4}]);
+  }
+  if(discTop.length>0){
+    mkDonut('lodDiscChart',discTop.map(x=>x[0]),discTop.map(x=>x[1]),CB);
+  } else {
+    mkDonut('lodDiscChart',['Filled','Pending'],[filledRows.length,total-filledRows.length],['#15803d','#e2e8f0']);
+  }
+
+  const tb=document.getElementById('lodTbody'); if(!tb)return; tb.innerHTML='';
+  dataRows.slice(0,50).forEach((r,i)=>{
+    tb.innerHTML+=`<tr><td>${i+1}</td><td>${r[3]||'<span style="color:var(--text3)">—</span>'}</td>
+      <td>${r[4]||'<span style="color:var(--text3)">—</span>'}</td>
+      <td>${r[5]||'—'}</td><td>${sPill(r[22]||'Pending')}</td></tr>`;
+  });
+  if(dataRows.length>50)document.getElementById('lodTbody').innerHTML+=`<tr><td colspan="5" style="text-align:center;color:var(--text2);font-size:11px;padding:8px">... and ${dataRows.length-50} more rows · Download CSV for full data</td></tr>`;
+
+  modalRegistry.lodModal={title:'LOD 500 Register',cols:['#','Sub-Con','Discipline','System','Status'],
+    rows:dataRows.slice(0,200).map((r,i)=>[i+1,r[3]||'—',r[4]||'—',r[5]||'—',r[22]||'Pending'])};
+}
+
+// ═══════════════════════════════════════════════════════════
+// WARRANTY
+// ═══════════════════════════════════════════════════════════
+function processWarranty(){
+  const name='Warranty Register';
+  const d=getSheet(name); if(!d.length)return;
+  const dataRows=d.slice(2).filter(r=>r&&r[1]==='Aramco Stadium');
+  const total=dataRows.length;
+  const scCounts={};
+  const statusCounts={};
+  const statusMap={A:'Approved',B:'In Review',C:'Pending',UR:'Under Review'};
+  dataRows.forEach(r=>{
+    const sc=r[10]||'Unknown', st=r[14]||'Unknown';
+    if(!scCounts[sc])scCounts[sc]={A:0,B:0,C:0,UR:0};
+    if(scCounts[sc][st]!==undefined)scCounts[sc][st]++;
+    statusCounts[st]=(statusCounts[st]||0)+1;
+  });
+  const approved=(statusCounts.A||0), appPct=total>0?Math.round(approved/total*100):0;
+
+  document.getElementById('warSubTitle').textContent=`${total} warranty entries · ${Object.keys(scCounts).length} sub-contractors`;
+  document.getElementById('warTblSub').textContent=`${total} warranty entries`;
+
+  mkKpi('warKpi',[
+    {ico:'✅',lbl:'Approved (A)',val:statusCounts.A||0,color:'#15803d',stripe:'linear-gradient(90deg,#15803d,#22c55e)',meta:'Fully approved',pct:appPct},
+    {ico:'🔄',lbl:'In Review (B)',val:statusCounts.B||0,color:'#2563eb',stripe:'linear-gradient(90deg,#1d4ed8,#3b82f6)',meta:'Under review'},
+    {ico:'👁',lbl:'Under Review (UR)',val:statusCounts.UR||0,color:'#7c3aed',stripe:'linear-gradient(90deg,#7c3aed,#a78bfa)',meta:'Awaiting decision'},
+    {ico:'⏳',lbl:'Pending (C)',val:statusCounts.C||0,color:'#b45309',stripe:'linear-gradient(90deg,#b45309,#f59e0b)',meta:'Not yet submitted'},
+  ]);
+
+  const subs=Object.keys(scCounts);
+  mkVBar('warBar',subs,[
+    {label:'Approved (A)',data:subs.map(s=>scCounts[s].A),backgroundColor:'#15803d',borderRadius:3,borderSkipped:false},
+    {label:'In Review (B)',data:subs.map(s=>scCounts[s].B),backgroundColor:'#2563eb',borderRadius:3,borderSkipped:false},
+    {label:'Under Review (UR)',data:subs.map(s=>scCounts[s].UR),backgroundColor:'#7c3aed',borderRadius:3,borderSkipped:false},
+    {label:'Pending (C)',data:subs.map(s=>scCounts[s].C),backgroundColor:'#b45309',borderRadius:3,borderSkipped:false},
+  ],true);
+  mkDonut('warDonut',Object.keys(statusMap).map(k=>statusMap[k]),Object.keys(statusMap).map(k=>statusCounts[k]||0),['#15803d','#2563eb','#7c3aed','#b45309']);
+  mkDonut('warStatusChart',Object.keys(statusMap).map(k=>statusMap[k]),Object.keys(statusMap).map(k=>statusCounts[k]||0),['#15803d','#2563eb','#7c3aed','#b45309']);
+
+  const tb=document.getElementById('warTbody'); if(!tb)return; tb.innerHTML='';
+  dataRows.forEach((r,i)=>{
+    tb.innerHTML+=`<tr><td>${i+1}</td><td><b>${r[10]||'—'}</b></td><td>${r[2]||'—'}</td>
+      <td>${r[3]||'—'}</td><td style="font-family:'DM Mono'">${r[11]||'—'}</td>
+      <td>${r[12]||'—'}</td><td>${sPill((statusMap[r[14]]||r[14])||'Unknown')}</td></tr>`;
+  });
+
+  modalRegistry.warModal={title:'Warranty Register',cols:['#','Sub-Con','Package','System','Cert Ref','Location','Status'],
+    rows:dataRows.map((r,i)=>[i+1,r[10]||'—',r[2]||'—',r[3]||'—',r[11]||'—',r[12]||'—',statusMap[r[14]]||r[14]||'Unknown'])};
+  modalRegistry.warSubModal={title:'Warranty by Sub-Contractor',cols:['Sub-Con','Approved','In Review','UR','Pending','Total'],
+    rows:subs.map(s=>[s,scCounts[s].A,scCounts[s].B,scCounts[s].UR,scCounts[s].C,Object.values(scCounts[s]).reduce((a,b)=>a+b,0)])};
+}
+
+// ═══════════════════════════════════════════════════════════
+// LESSONS LEARNED
+// ═══════════════════════════════════════════════════════════
+function processLessons(){
+  const name='Lessons Learned ';
+  const d=getSheet(name); if(!d.length)return;
+  // Data starts at row 6 (index 5), has no. at col 0
+  const dataRows=d.slice(5).filter(r=>r&&r[0]&&!isNaN(parseInt(r[0])));
+  const total=dataRows.length;
+  // Normalize disciplines
+  function normDisc(v){
+    if(!v)return'Unknown';
+    if(v.includes('Civil'))return'Civil';
+    if(v.includes('QA')||v.includes('Quality'))return'QA/QC';
+    if(v.includes('Electrical')||v.includes('MEP'))return'MEP/Electrical';
+    if(v.includes('Mechanical'))return'Mechanical';
+    if(v.includes('Steel')||v.includes('STL')||v.includes('Structural'))return'Structural';
+    if(v.includes('Fire'))return'Fire Fighting';
+    if(v.includes('Telecom'))return'Telecom';
+    if(v.includes('All')||v.includes('Coordination')||v.includes('Site')||v.includes('Construction'))return'Multi-Discipline';
+    if(v.includes('Architectural'))return'Architectural';
+    if(v.includes('Finishing')||v.includes('Concrete')||v.includes('Precast')||v.includes('PLU'))return'Civil';
+    return v;
+  }
+  function normStage(v){
+    if(!v)return'Unknown';
+    if(v.toLowerCase().includes('mobil'))return'Mobilization';
+    if(v.toLowerCase().includes('construct'))return'Construction/Execution';
+    return v;
+  }
+  const discCounts={}, stageCounts={};
+  dataRows.forEach(r=>{
+    const d=normDisc(r[5]); discCounts[d]=(discCounts[d]||0)+1;
+    const s=normStage(r[3]); stageCounts[s]=(stageCounts[s]||0)+1;
+  });
+  const discTop=topN(discCounts);
+  const stageTop=topN(stageCounts);
+
+  document.getElementById('lessSubTitle').textContent=`${total} lessons · ${Object.keys(discCounts).length} disciplines`;
+  document.getElementById('lessTblSub').textContent=`${total} lessons learned entries`;
+
+  mkKpi('lessKpi',[
+    {ico:'📚',lbl:'Total Entries',val:total,color:'#1e3a5f',stripe:'linear-gradient(90deg,#1e3a5f,#2563eb)',meta:'Logged lessons'},
+    {ico:'🏗️',lbl:'Civil',val:discCounts.Civil||0,color:'#15803d',stripe:'linear-gradient(90deg,#15803d,#22c55e)',meta:'Civil discipline',pct:total>0?Math.round((discCounts.Civil||0)/total*100):0},
+    {ico:'⚡',lbl:'MEP/Electrical',val:(discCounts['MEP/Electrical']||0)+(discCounts.Mechanical||0),color:'#0f766e',stripe:'linear-gradient(90deg,#0f766e,#2dd4bf)',meta:'MEP disciplines'},
+    {ico:'📋',lbl:'QA/QC',val:discCounts['QA/QC']||0,color:'#7c3aed',stripe:'linear-gradient(90deg,#7c3aed,#a78bfa)',meta:'Quality entries'},
+  ]);
+
+  mkHBar('lessDiscBar',discTop.map(x=>x[0]),[{label:'Count',data:discTop.map(x=>x[1]),backgroundColor:CB.slice(0,discTop.length),borderRadius:4,borderSkipped:false}]);
+  mkHBar('lessChart',discTop.map(x=>x[0]),[{label:'Count',data:discTop.map(x=>x[1]),backgroundColor:CB.slice(0,discTop.length),borderRadius:4,borderSkipped:false}]);
+  mkDonut('lessStageBar',stageTop.map(x=>x[0]),stageTop.map(x=>x[1]),CB);
+
+  const tb=document.getElementById('lessTbody'); if(!tb)return; tb.innerHTML='';
+  dataRows.slice(0,60).forEach(r=>{
+    tb.innerHTML+=`<tr><td>${r[0]}</td><td style="font-family:'DM Mono'">${fmtDate(r[2])}</td>
+      <td>${sPill(normStage(r[3]))}</td><td><b>${normDisc(r[5])}</b></td>
+      <td>${(r[4]||'').toString().substring(0,60)}${(r[4]||'').toString().length>60?'…':''}</td>
+      <td style="color:var(--text2)">${r[1]||'—'}</td>
+      <td style="color:var(--text2)">${r[8]||'—'}</td></tr>`;
+  });
+
+  modalRegistry.lessDiscModal={title:'Lessons by Discipline',cols:['Discipline','Count'],rows:discTop};
+  modalRegistry.lessStageModal={title:'Lessons by Stage',cols:['Stage','Count'],rows:stageTop};
+  modalRegistry.lessFullModal={title:'Lessons Learned — Full Register',cols:['#','Date','Stage','Discipline','Title','Author'],
+    rows:dataRows.map(r=>[r[0],fmtDate(r[2]),normStage(r[3]),normDisc(r[5]),(r[4]||'').toString().substring(0,80),r[1]||'—'])};
+}
+
+// ═══════════════════════════════════════════════════════════
+// COMMUNICATIONS
+// ═══════════════════════════════════════════════════════════
+function processComms(){
+  const name='Communication records';
+  const d=getSheet(name); if(!d.length)return;
+  const dataRows=d.slice(2).filter(r=>r&&r[0]&&typeof r[0]==='number');
+  const total=dataRows.length;
+  const typeCounts=countBy(dataRows,2);
+  const statusCounts=countBy(dataRows,8);
+  const methodCounts=countBy(dataRows,7);
+  const resolvedStatuses=['Approved','Completed','Closed','Resolved','Noted'];
+  const resolved=dataRows.filter(r=>resolvedStatuses.some(s=>String(r[8]||'').includes(s))).length;
+  const resPct=total>0?Math.round(resolved/total*100):0;
+
+  document.getElementById('commSubTitle').textContent=`${total} records · ${resolved} resolved`;
+  document.getElementById('commTblSub').textContent=`${total} communication records`;
+
+  mkKpi('commKpi',[
+    {ico:'📡',lbl:'Total Records',val:total,color:'#1e3a5f',stripe:'linear-gradient(90deg,#1e3a5f,#2563eb)',meta:'Communications logged'},
+    {ico:'✅',lbl:'Resolved',val:resolved,color:'#15803d',stripe:'linear-gradient(90deg,#15803d,#22c55e)',meta:'Closed/Approved/Done',pct:resPct},
+    {ico:'⏳',lbl:'Open/Pending',val:total-resolved,color:'#b45309',stripe:'linear-gradient(90deg,#b45309,#f59e0b)',meta:'Awaiting action'},
+    {ico:'📝',lbl:'Types',val:Object.keys(typeCounts).length,color:'#7c3aed',stripe:'linear-gradient(90deg,#7c3aed,#a78bfa)',meta:'Unique types'},
+  ]);
+
+  const typeTop=topN(typeCounts);
+  const statusTop=topN(statusCounts);
+  mkHBar('commTypeBar',typeTop.map(x=>x[0]),[{label:'Count',data:typeTop.map(x=>x[1]),backgroundColor:CB.slice(0,typeTop.length),borderRadius:4,borderSkipped:false}]);
+  mkDonut('commChart',statusTop.map(x=>x[0]),statusTop.map(x=>x[1]),CB);
+  mkDonut('commStatusBar',statusTop.map(x=>x[0]),statusTop.map(x=>x[1]),CB);
+
+  const tb=document.getElementById('commTbody'); if(!tb)return; tb.innerHTML='';
+  dataRows.forEach(r=>{
+    tb.innerHTML+=`<tr><td>${r[0]}</td><td style="font-family:'DM Mono'">${fmtDate(r[1])}</td>
+      <td><b>${r[2]||'—'}</b></td><td style="color:var(--text2)">${(r[3]||'').toString().substring(0,30)}</td>
+      <td>${(r[5]||'').toString().substring(0,50)}${(r[5]||'').toString().length>50?'…':''}</td>
+      <td style="font-family:'DM Mono';font-size:11px">${r[6]||'—'}</td>
+      <td>${r[7]||'—'}</td><td>${sPill(r[8]||'—')}</td></tr>`;
+  });
+
+  modalRegistry.commModal={title:'Communication Records',cols:['#','Date','Type','From','Subject','Ref','Method','Status'],
+    rows:dataRows.map(r=>[r[0],fmtDate(r[1]),r[2]||'—',(r[3]||'').toString().substring(0,40),(r[5]||'').toString().substring(0,60),r[6]||'—',r[7]||'—',r[8]||'—'])};
+  modalRegistry.commTypeModal={title:'Comms by Type',cols:['Type','Count'],rows:typeTop};
+}
+
+// ═══════════════════════════════════════════════════════════
+// SNAGGING
+// ═══════════════════════════════════════════════════════════
+function processSnagging(){
+  const name='Snagging & De-Snagging';
+  const d=getSheet(name); if(!d.length)return;
+  // Header at row 4 (index 3), data from row 5
+  const dataRows=d.slice(4).filter(r=>r&&r[0]&&!isNaN(parseInt(r[0])));
+  const total=dataRows.length;
+  const discCounts=countBy(dataRows,3);
+  const statusCounts=countBy(dataRows,11);
+  const catCounts=countBy(dataRows,6);
+  const zoneCounts=countBy(dataRows,4);
+  const closed=dataRows.filter(r=>String(r[11]||'').toLowerCase().includes('clos')).length;
+  const closePct=total>0?Math.round(closed/total*100):0;
+
+  mkKpi('snagKpi',[
+    {ico:'🔧',lbl:'Total Snags',val:total||'0',color:'#1e3a5f',stripe:'linear-gradient(90deg,#1e3a5f,#2563eb)',meta:'All raised snags'},
+    {ico:'✅',lbl:'Closed',val:closed,color:'#15803d',stripe:'linear-gradient(90deg,#15803d,#22c55e)',meta:'De-snagged',pct:closePct},
+    {ico:'❌',lbl:'Open',val:total-closed,color:'#dc2626',stripe:'linear-gradient(90deg,#dc2626,#ef4444)',meta:'Still open'},
+    {ico:'⚠️',lbl:'Closure Rate',val:total>0?closePct+'%':'—',color:'#b45309',stripe:'linear-gradient(90deg,#b45309,#f59e0b)',meta:'% resolved'},
+  ]);
+
+  const discTop=topN(discCounts,8);
+  const statusTop=topN(statusCounts,6);
+  if(discTop.length>0){
+    mkHBar('snagDiscBar',discTop.map(x=>x[0]),[{label:'Snags',data:discTop.map(x=>x[1]),backgroundColor:CB.slice(0,discTop.length),borderRadius:4,borderSkipped:false}]);
+  } else {
+    mkVBar('snagDiscBar',['Template Ready'],[{label:'Upload data',data:[0],backgroundColor:['#e2e8f0'],borderRadius:4}]);
+  }
+  if(statusTop.length>0){
+    mkDonut('snagStatusChart',statusTop.map(x=>x[0]),statusTop.map(x=>x[1]),CB);
+  } else {
+    mkDonut('snagStatusChart',['No Data'],[1],['#e2e8f0']);
+  }
+
+  const tb=document.getElementById('snagTbody'); if(!tb)return; tb.innerHTML='';
+  if(total>0){
+    dataRows.slice(0,50).forEach(r=>{
+      tb.innerHTML+=`<tr><td>${r[0]}</td><td style="font-family:'DM Mono'">${r[2]||'—'}</td>
+        <td>${r[3]||'—'}</td><td>${r[4]||'—'}</td><td>${r[6]||'—'}</td>
+        <td style="color:var(--text2)">${r[7]||'—'}</td>
+        <td>${sPill(r[11]||'Open')}</td><td style="font-family:'DM Mono'">${fmtDate(r[10])}</td></tr>`;
+    });
+  } else {
+    emptyState('snagTbody',8);
+  }
+
+  modalRegistry.snagDiscModal={title:'Snags by Discipline',cols:['Discipline','Count'],rows:discTop};
+  modalRegistry.snagModal={title:'Snagging Register',cols:['#','SNAG ID','Discipline','Zone','Category','Status','Target Date'],
+    rows:dataRows.slice(0,200).map(r=>[r[0],r[2]||'—',r[3]||'—',r[4]||'—',r[6]||'—',r[11]||'—',fmtDate(r[10])])};
+}
+
+// ═══════════════════════════════════════════════════════════
+// T&C
+// ═══════════════════════════════════════════════════════════
+function processTC(){
+  const name='T&C Register';
+  const d=getSheet(name); if(!d.length)return;
+  const dataRows=d.slice(4).filter(r=>r&&r[0]&&!isNaN(parseInt(r[0])));
+  const total=dataRows.length;
+  const sysCounts=countBy(dataRows,2);
+  const statusCounts=countBy(dataRows,8);
+  const passed=dataRows.filter(r=>String(r[8]||'').toLowerCase().includes('pass')||String(r[8]||'').toLowerCase().includes('complet')).length;
+  const passPct=total>0?Math.round(passed/total*100):0;
+
+  mkKpi('tcKpi',[
+    {ico:'⚡',lbl:'Total T&C Items',val:total||'0',color:'#1e3a5f',stripe:'linear-gradient(90deg,#1e3a5f,#2563eb)',meta:'All T&C entries'},
+    {ico:'✅',lbl:'Passed/Complete',val:passed,color:'#15803d',stripe:'linear-gradient(90deg,#15803d,#22c55e)',meta:'Tests completed',pct:passPct},
+    {ico:'⏳',lbl:'Pending',val:total-passed,color:'#b45309',stripe:'linear-gradient(90deg,#b45309,#f59e0b)',meta:'Not yet complete'},
+    {ico:'🔧',lbl:'Systems',val:Object.keys(sysCounts).filter(k=>k!=='Unknown').length||'—',color:'#7c3aed',stripe:'linear-gradient(90deg,#7c3aed,#a78bfa)',meta:'Unique systems'},
+  ]);
+
+  const sysTop=topN(sysCounts,8);
+  const statusTop=topN(statusCounts,6);
+  if(sysTop.length>0){
+    mkHBar('tcSysBar',sysTop.map(x=>x[0]),[{label:'T&C Items',data:sysTop.map(x=>x[1]),backgroundColor:CB.slice(0,sysTop.length),borderRadius:4,borderSkipped:false}]);
+  } else {
+    mkVBar('tcSysBar',['Template Ready'],[{label:'Upload data',data:[0],backgroundColor:['#e2e8f0'],borderRadius:4}]);
+  }
+  statusTop.length>0?mkDonut('tcStatusChart',statusTop.map(x=>x[0]),statusTop.map(x=>x[1]),CB):mkDonut('tcStatusChart',['No Data'],[1],['#e2e8f0']);
+
+  const tb=document.getElementById('tcTbody'); if(!tb)return; tb.innerHTML='';
+  if(total>0){
+    dataRows.slice(0,50).forEach(r=>{
+      tb.innerHTML+=`<tr><td>${r[0]}</td><td>${r[1]||'—'}</td><td><b>${r[2]||'—'}</b></td>
+        <td>${(r[3]||'').toString().substring(0,40)}</td><td style="font-family:'DM Mono'">${r[4]||'—'}</td>
+        <td>${r[6]||'—'}</td><td>${sPill(r[8]||'—')}</td><td style="font-family:'DM Mono'">${fmtDate(r[10])}</td></tr>`;
+    });
+  } else { emptyState('tcTbody',8); }
+
+  modalRegistry.tcSysModal={title:'T&C by System',cols:['System','Count'],rows:sysTop};
+  modalRegistry.tcModal={title:'T&C Register',cols:['#','Sub-Con','System','Equipment','Tag','Test Type','Status','Date'],
+    rows:dataRows.slice(0,200).map(r=>[r[0],r[1]||'—',r[2]||'—',(r[3]||'').toString().substring(0,40),r[4]||'—',r[6]||'—',r[8]||'—',fmtDate(r[10])])};
+}
+
+// ═══════════════════════════════════════════════════════════
+// AUTHORITIES
+// ═══════════════════════════════════════════════════════════
+function processAuthorities(){
+  const name='Authorities Approvals';
+  const d=getSheet(name); if(!d.length)return;
+  const dataRows=d.slice(4).filter(r=>r&&r[0]&&!isNaN(parseInt(r[0])));
+  const total=dataRows.length;
+  const scCounts=countBy(dataRows,1);
+  const statusCounts=countBy(dataRows,13);
+  const approved=dataRows.filter(r=>String(r[13]||'').toLowerCase().includes('approv')).length;
+  const appPct=total>0?Math.round(approved/total*100):0;
+
+  mkKpi('authKpi',[
+    {ico:'🏛️',lbl:'Total Approvals',val:total||'0',color:'#1e3a5f',stripe:'linear-gradient(90deg,#1e3a5f,#2563eb)',meta:'All authority items'},
+    {ico:'✅',lbl:'Approved',val:approved,color:'#15803d',stripe:'linear-gradient(90deg,#15803d,#22c55e)',meta:'Issued permits',pct:appPct},
+    {ico:'⏳',lbl:'Pending',val:total-approved,color:'#b45309',stripe:'linear-gradient(90deg,#b45309,#f59e0b)',meta:'Not yet approved'},
+    {ico:'👥',lbl:'Sub-Contractors',val:Object.keys(scCounts).filter(k=>k!=='Unknown').length||'—',color:'#7c3aed',stripe:'linear-gradient(90deg,#7c3aed,#a78bfa)',meta:'Involved parties'},
+  ]);
+
+  const scTop=topN(scCounts,8);
+  const statusTop=topN(statusCounts,6);
+  scTop.length>0?mkVBar('authSubBar',scTop.map(x=>x[0]),[{label:'Items',data:scTop.map(x=>x[1]),backgroundColor:CB,borderRadius:4}]):mkVBar('authSubBar',['No Data'],[{label:'Upload',data:[0],backgroundColor:['#e2e8f0'],borderRadius:4}]);
+  statusTop.length>0?mkDonut('authStatusChart',statusTop.map(x=>x[0]),statusTop.map(x=>x[1]),CB):mkDonut('authStatusChart',['No Data'],[1],['#e2e8f0']);
+
+  const tb=document.getElementById('authTbody'); if(!tb)return; tb.innerHTML='';
+  if(total>0){
+    dataRows.slice(0,50).forEach(r=>{
+      tb.innerHTML+=`<tr><td>${r[0]}</td><td>${r[1]||'—'}</td>
+        <td>${(r[3]||'').toString().substring(0,40)}</td><td>${r[4]||'—'}</td>
+        <td>${r[6]||'—'}</td><td style="font-family:'DM Mono'">${fmtDate(r[8])}</td>
+        <td style="font-family:'DM Mono'">${fmtDate(r[9])}</td><td>${sPill(r[13]||'—')}</td></tr>`;
+    });
+  } else { emptyState('authTbody',8); }
+
+  modalRegistry.authModal={title:'Authorities Approvals',cols:['#','Sub-Con','Permit Title','Authority','System','Applied','Approved','Status'],
+    rows:dataRows.slice(0,200).map(r=>[r[0],r[1]||'—',(r[3]||'').toString().substring(0,50),r[4]||'—',r[6]||'—',fmtDate(r[8]),fmtDate(r[9]),r[13]||'—'])};
+}
+
+// ═══════════════════════════════════════════════════════════
+// CLOSEOUT
+// ═══════════════════════════════════════════════════════════
+function processCloseout(){
+  const sheets=[
+    {name:'Final Cleaning Submission',label:'Final Cleaning',zoneCol:1,catCol:3,descCol:4,statusCol:9},
+    {name:'Pest Control Reports',label:'Pest Control',zoneCol:3,catCol:4,descCol:5,statusCol:8},
+    {name:'Specifications',label:'Specifications',zoneCol:3,catCol:4,descCol:5,statusCol:8},
+  ];
+
+  const allRows=[];
+  sheets.forEach(sh=>{
+    const d=getSheet(sh.name); if(!d.length)return;
+    const dataRows=d.slice(4).filter(r=>r&&r[0]&&!isNaN(parseInt(r[0])));
+    const zoneCounts=countBy(dataRows,sh.zoneCol);
+    const zTop=topN(zoneCounts,8);
+    const statusCounts=countBy(dataRows,sh.statusCol);
+    const sTop=topN(statusCounts,6);
+    dataRows.forEach(r=>allRows.push({sheet:sh.label,zone:r[sh.zoneCol]||'—',cat:r[sh.catCol]||'—',desc:(r[sh.descCol]||'').toString().substring(0,40),status:r[sh.statusCol]||'—',n:r[0]}));
+
+    const chartId=sh.label==='Final Cleaning'?'cleanChart':sh.label==='Pest Control'?'pestChart':'specChart';
+    const modalId=sh.label==='Final Cleaning'?'cleanModal':sh.label==='Pest Control'?'pestModal':'specModal';
+    if(zTop.length>0){
+      mkVBar(chartId,zTop.map(x=>x[0]),[{label:sh.label,data:zTop.map(x=>x[1]),backgroundColor:CB,borderRadius:4}]);
+    } else {
+      mkVBar(chartId,['No Data'],[{label:'Upload',data:[0],backgroundColor:['#e2e8f0'],borderRadius:4}]);
+    }
+    modalRegistry[modalId]={title:`${sh.label} Register`,cols:['#','Zone','Category','Description','Status'],
+      rows:dataRows.slice(0,100).map(r=>[r[0],r[sh.zoneCol]||'—',r[sh.catCol]||'—',(r[sh.descCol]||'').toString().substring(0,50),r[sh.statusCol]||'—'])};
+  });
+
+  const tb=document.getElementById('coTbody'); if(!tb)return; tb.innerHTML='';
+  if(allRows.length>0){
+    const total=allRows.length;
+    document.getElementById('coTblSub').textContent=`${total} entries across Final Cleaning, Pest Control and Specifications`;
+    allRows.slice(0,60).forEach((r,i)=>{
+      tb.innerHTML+=`<tr><td>${i+1}</td><td><b>${r.sheet}</b></td><td>${r.zone}</td>
+        <td>${r.cat}</td><td>${r.desc}</td><td>${sPill(r.status)}</td></tr>`;
+    });
+  } else { emptyState('coTbody',6); }
+}
+
+// ═══════════════════════════════════════════════════════════
+// OVERVIEW
+// ═══════════════════════════════════════════════════════════
+function buildOverview(){
+  // Build KPIs from all loaded data
+  const abRows=getSheet('2. As-Built Drawings').slice(2).filter(r=>r&&r[1]&&String(r[1])!=='ORIGINATOR'&&String(r[1]).trim()!=='');
+  const lodRows=getSheet('1. LOD 500 Tracker').slice(2).filter(r=>r&&r[1]==='Aramco Stadium');
+  const warRows=getSheet('Warranty Register').slice(2).filter(r=>r&&r[1]==='Aramco Stadium');
+  const lessRows=getSheet('Lessons Learned ').slice(5).filter(r=>r&&r[0]&&!isNaN(parseInt(r[0])));
+  const commRows=getSheet('Communication records').slice(2).filter(r=>r&&r[0]&&typeof r[0]==='number');
+  const snagRows=getSheet('Snagging & De-Snagging').slice(4).filter(r=>r&&r[0]&&!isNaN(parseInt(r[0])));
+  const tcRows=getSheet('T&C Register').slice(4).filter(r=>r&&r[0]&&!isNaN(parseInt(r[0])));
+  const authRows=getSheet('Authorities Approvals').slice(4).filter(r=>r&&r[0]&&!isNaN(parseInt(r[0])));
+
+  const warApproved=warRows.filter(r=>r[14]==='A').length;
+  const warTotal=warRows.length;
+  const commResolved=commRows.filter(r=>['Approved','Completed','Closed','Resolved','Noted'].some(s=>String(r[8]||'').includes(s))).length;
+
+  mkKpi('ovKpi',[
+    {ico:'📐',lbl:'As-Built Drawings',val:abRows.length.toLocaleString(),color:'#2563eb',stripe:'linear-gradient(90deg,#1e3a5f,#2563eb)',meta:'Tracked drawings',pct:Math.min(100,Math.round(abRows.length/1650*100))},
+    {ico:'🏗️',lbl:'LOD 500 Items',val:lodRows.length,color:'#15803d',stripe:'linear-gradient(90deg,#15803d,#22c55e)',meta:'BIM model items'},
+    {ico:'🛡️',lbl:'Warranty Entries',val:warTotal,color:'#7c3aed',stripe:'linear-gradient(90deg,#7c3aed,#a78bfa)',meta:`${warApproved} approved`,pct:warTotal>0?Math.round(warApproved/warTotal*100):0},
+    {ico:'📚',lbl:'Lessons Learned',val:lessRows.length,color:'#0f766e',stripe:'linear-gradient(90deg,#0f766e,#2dd4bf)',meta:'Quality entries'},
+    {ico:'📡',lbl:'Communications',val:commRows.length,color:'#b45309',stripe:'linear-gradient(90deg,#b45309,#f59e0b)',meta:`${commResolved} resolved`,pct:commRows.length>0?Math.round(commResolved/commRows.length*100):0},
+  ]);
+
+  const abOrig=countBy(abRows,1);
+  const abTop=topN(abOrig,10);
+  const warStatuses=countBy(warRows,14);
+  const lessDisc={};
+  lessRows.forEach(r=>{
+    let d=r[5]||'Unknown';
+    if(d.includes('Civil'))d='Civil';
+    else if(d.includes('QA')||d.includes('Quality'))d='QA/QC';
+    else if(d.includes('Electrical')||d.includes('MEP'))d='MEP/Electrical';
+    else if(d.includes('Mechanical'))d='Mechanical';
+    else if(d.includes('Steel')||d.includes('Structural'))d='Structural';
+    else d='Other';
+    lessDisc[d]=(lessDisc[d]||0)+1;
+  });
+  const ldTop=topN(lessDisc,8);
+  const commStatus=countBy(commRows,8);
+  const csTop=topN(commStatus,6);
+
+  const statMap={A:'Approved',B:'In Review',C:'Pending',UR:'Under Review'};
+  mkHBar('origChart',abTop.map(x=>x[0]),[{label:'Drawings',data:abTop.map(x=>x[1]),backgroundColor:CB.slice(0,abTop.length),borderRadius:4,borderSkipped:false}]);
+  mkDonut('warDonut',Object.keys(statMap).map(k=>statMap[k]),Object.keys(statMap).map(k=>warStatuses[k]||0),['#15803d','#2563eb','#7c3aed','#b45309']);
+  mkHBar('lessChart',ldTop.map(x=>x[0]),[{label:'Count',data:ldTop.map(x=>x[1]),backgroundColor:CB.slice(0,ldTop.length),borderRadius:4,borderSkipped:false}]);
+  if(csTop.length>0)mkDonut('commChart',csTop.map(x=>x[0]),csTop.map(x=>x[1]),CB);
+
+  renderGauges([
+    {label:'As-Built Progress',pct:Math.min(100,Math.round(abRows.length/1650*100)),color:'#2563eb',note:`${abRows.length.toLocaleString()} drawings`},
+    {label:'Warranty Approved',pct:warTotal>0?Math.round(warApproved/warTotal*100):0,color:'#15803d',note:`${warApproved} of ${warTotal}`},
+    {label:'Comms Resolved',pct:commRows.length>0?Math.round(commResolved/commRows.length*100):0,color:'#0f766e',note:`${commResolved} of ${commRows.length}`},
+    {label:'T&C Complete',pct:tcRows.length>0?Math.round(tcRows.filter(r=>String(r[8]||'').toLowerCase().includes('pass')||String(r[8]||'').toLowerCase().includes('complet')).length/tcRows.length*100):0,color:'#7c3aed',note:`${tcRows.length} items`},
+  ]);
+}
+
+// ═══════════════════════════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════════════════════════
+let mCSVData=null,mCSVName='export';
+function openModal(key){
+  const d=modalRegistry[key]; if(!d){alert('Upload your Excel file first to view this data.');return;}
+  document.getElementById('mTitle').textContent=d.title;
+  mCSVData=d; mCSVName=d.title.replace(/\s+/g,'_');
+  let h=`<table class="mt-tbl"><thead><tr>${d.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>`;
+  d.rows.forEach(r=>{h+=`<tr>${(Array.isArray(r)?r:[r]).map(c=>`<td>${c}</td>`).join('')}</tr>`;});
+  h+='</tbody></table>';
+  document.getElementById('mBody').innerHTML=h;
+  document.getElementById('modalOv').classList.add('open');
+}
+function closeMod(e){if(!e||e.target===document.getElementById('modalOv'))document.getElementById('modalOv').classList.remove('open');}
+function dlModalCSV(){
+  if(!mCSVData)return;
+  const csv=[mCSVData.cols.join(','),...mCSVData.rows.map(r=>(Array.isArray(r)?r:[r]).map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','))].join('\n');
+  const a=document.createElement('a'); a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv); a.download=mCSVName+'.csv'; a.click();
+}
+function dlChart(id,name){
+  const c=document.getElementById(id); if(!c)return;
+  const a=document.createElement('a'); a.href=c.toDataURL('image/png'); a.download=name+'.png'; a.click();
+}
+</script>
+
+
+</body></html>
